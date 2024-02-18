@@ -9,6 +9,7 @@ import com.pengrad.telegrambot.request.SetMyCommands;
 import edu.java.bot.command.Command;
 import java.util.List;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -17,8 +18,10 @@ public class ObserverBot {
 
     private final TelegramBot telegramBot;
 
+    @Getter
     private List<Command> commandsList;
 
+    @Getter
     private List<String> linksList;
 
     public void init() {
@@ -39,7 +42,7 @@ public class ObserverBot {
         telegramBot.execute(new SetMyCommands(commands));
     }
 
-    private SendMessage processMessage(Update update) {
+    public SendMessage processMessage(Update update) {
         long chatId = update.message().chat().id();
 
         for (Command command: commandsList) {

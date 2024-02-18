@@ -46,7 +46,7 @@ public class UntrackCommand implements Command {
 
     private String removeLink(String link) {
         if (!linksList.contains(link)) {
-            return "The link is no such observed link.";
+            return "There is no such observed link.";
         }
 
         linksList.remove(link);
