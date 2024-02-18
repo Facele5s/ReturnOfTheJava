@@ -25,7 +25,8 @@ public class ObserverBot {
         addCommands();
 
         telegramBot.setUpdatesListener(updates -> {
-            updates.forEach(update -> telegramBot.execute(processMessage(update)));
+            updates.stream().filter(update -> update.message() != null)
+                .forEach(update -> telegramBot.execute(processMessage(update)));
             return UpdatesListener.CONFIRMED_UPDATES_ALL;
         });
     }
