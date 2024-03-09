@@ -3,10 +3,10 @@ package edu.java.controller;
 import edu.java.dto.exception.BadRequestException;
 import edu.java.dto.exception.NotFoundException;
 import edu.java.dto.response.ApiErrorResponse;
+import java.util.Arrays;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import java.util.Arrays;
 
 @RestControllerAdvice
 public class ApiExceptionHandler {
