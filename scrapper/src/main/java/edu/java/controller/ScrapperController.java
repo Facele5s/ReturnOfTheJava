@@ -1,5 +1,7 @@
 package edu.java.controller;
 
+import edu.java.dto.exception.BadRequestException;
+import edu.java.dto.exception.NotFoundException;
 import edu.java.dto.request.AddLinkRequest;
 import edu.java.dto.request.RemoveLinkRequest;
 import edu.java.dto.response.LinkResponse;
@@ -20,31 +22,33 @@ public class ScrapperController {
     private final ScrapperService service;
 
     @GetMapping("/links")
-    public ListLinkResponse getLinks(@RequestHeader("Tg-Chat-id") Long chatId) {
+    public ListLinkResponse getLinks(@RequestHeader("Tg-Chat-id") Long chatId) throws NotFoundException {
         return service.getLinks(chatId);
     }
 
     @PostMapping("/links")
-    public LinkResponse addLink(@RequestHeader("Tg-Chat-id") Long chatId, @RequestBody AddLinkRequest request) {
+    public LinkResponse addLink(@RequestHeader("Tg-Chat-id") Long chatId, @RequestBody AddLinkRequest request)
+        throws BadRequestException, NotFoundException {
         LinkResponse link = new LinkResponse(chatId, request.link());
 
         return service.addLink(chatId, link);
     }
 
     @DeleteMapping("/links")
-    public LinkResponse deleteLink(@RequestHeader("Tg-Chat-id") Long chatId, @RequestBody RemoveLinkRequest request) {
+    public LinkResponse deleteLink(@RequestHeader("Tg-Chat-id") Long chatId, @RequestBody RemoveLinkRequest request)
+        throws BadRequestException, NotFoundException {
         LinkResponse link = new LinkResponse(chatId, request.link());
 
         return service.deleteLink(chatId, link);
     }
 
     @PostMapping("/tg-chat/{id}")
-    public void registerChat(@PathVariable("id") Long chatId) {
+    public void registerChat(@PathVariable("id") Long chatId) throws BadRequestException {
         service.registerChat(chatId);
     }
 
     @DeleteMapping("/tg-chat/{id}")
-    public void deleteChat(@PathVariable("id") Long chatId) {
+    public void deleteChat(@PathVariable("id") Long chatId) throws NotFoundException {
         service.deleteChat(chatId);
     }
 }
