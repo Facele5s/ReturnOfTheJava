@@ -20,31 +20,31 @@ public class ScrapperController {
     private final ScrapperService service;
 
     @GetMapping("/links")
-    public ListLinkResponse getLinks(@RequestHeader("Tg-chat-id") Long id) {
-        return service.getLinks(id);
+    public ListLinkResponse getLinks(@RequestHeader("Tg-Chat-id") Long chatId) {
+        return service.getLinks(chatId);
     }
 
     @PostMapping("/links")
-    public LinkResponse addLink(@RequestHeader("Tg-chat-id") Long id, @RequestBody AddLinkRequest request) {
-        LinkResponse link = new LinkResponse(id, request.link());
+    public LinkResponse addLink(@RequestHeader("Tg-Chat-id") Long chatId, @RequestBody AddLinkRequest request) {
+        LinkResponse link = new LinkResponse(chatId, request.link());
 
-        return service.addLink(id, link);
+        return service.addLink(chatId, link);
     }
 
     @DeleteMapping("/links")
-    public LinkResponse deleteLink(@RequestHeader("Tg-chat-id") Long id, @RequestBody RemoveLinkRequest request) {
-        LinkResponse link = new LinkResponse(id, request.link());
+    public LinkResponse deleteLink(@RequestHeader("Tg-Chat-id") Long chatId, @RequestBody RemoveLinkRequest request) {
+        LinkResponse link = new LinkResponse(chatId, request.link());
 
-        return service.deleteLink(id, link);
+        return service.deleteLink(chatId, link);
     }
 
     @PostMapping("/tg-chat/{id}")
-    public void registerChat(@PathVariable("id") Long id) {
-        service.registerChat(id);
+    public void registerChat(@PathVariable("id") Long chatId) {
+        service.registerChat(chatId);
     }
 
     @DeleteMapping("/tg-chat/{id}")
-    public void deleteChat(@PathVariable("id") Long id) {
-        service.deleteChat(id);
+    public void deleteChat(@PathVariable("id") Long chatId) {
+        service.deleteChat(chatId);
     }
 }

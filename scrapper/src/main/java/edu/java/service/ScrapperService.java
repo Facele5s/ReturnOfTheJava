@@ -9,30 +9,30 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class ScrapperService {
-    private Map<Long, ListLinkResponse> chats = new HashMap<>();
+    private final Map<Long, ListLinkResponse> chats = new HashMap<>();
 
-    public void registerChat(Long id) {
-        chats.put(id, new ListLinkResponse(new ArrayList<>(), 0));
+    public void registerChat(Long chatId) {
+        chats.put(chatId, new ListLinkResponse(new ArrayList<>(), 0));
     }
 
-    public void deleteChat(Long id) {
-        chats.remove(id);
+    public void deleteChat(Long chatId) {
+        chats.remove(chatId);
     }
 
-    public ListLinkResponse getLinks(Long id) {
-        return chats.get(id);
+    public ListLinkResponse getLinks(Long chatId) {
+        return chats.get(chatId);
     }
 
-    public LinkResponse addLink(Long id, LinkResponse link) {
-        ListLinkResponse links = chats.get(id);
-        links.links().add(link);
+    public LinkResponse addLink(Long chatId, LinkResponse link) {
+        ListLinkResponse linkResponseList = chats.get(chatId);
+        linkResponseList.links().add(link);
 
         return link;
     }
 
-    public LinkResponse deleteLink(Long id, LinkResponse link) {
-        ListLinkResponse links = chats.get(id);
-        links.links().remove(link);
+    public LinkResponse deleteLink(Long chatId, LinkResponse link) {
+        ListLinkResponse linkResponseList = chats.get(chatId);
+        linkResponseList.links().remove(link);
 
         return link;
     }
