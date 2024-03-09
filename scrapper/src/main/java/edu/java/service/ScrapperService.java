@@ -1,7 +1,7 @@
 package edu.java.service;
 
-import edu.java.dto.LinkResponse;
-import edu.java.dto.ListLinkResponse;
+import edu.java.dto.response.LinkResponse;
+import edu.java.dto.response.ListLinkResponse;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;

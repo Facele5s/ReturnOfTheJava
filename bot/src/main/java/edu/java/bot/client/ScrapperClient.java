@@ -1,11 +1,11 @@
 package edu.java.bot.client;
 
-import edu.java.bot.dto.AddLinkRequest;
-import edu.java.bot.dto.ApiErrorResponse;
-import edu.java.bot.dto.LinkResponse;
-import edu.java.bot.dto.ListLinkResponse;
-import edu.java.bot.dto.RemoveLinkRequest;
-import edu.java.bot.exception.ApiErrorResponseException;
+import edu.java.dto.exception.ApiErrorResponseException;
+import edu.java.dto.request.AddLinkRequest;
+import edu.java.dto.request.RemoveLinkRequest;
+import edu.java.dto.response.ApiErrorResponse;
+import edu.java.dto.response.LinkResponse;
+import edu.java.dto.response.ListLinkResponse;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.BodyInserters;

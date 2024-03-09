@@ -68,6 +68,13 @@
             <version>2.16.1</version>
         </dependency>
 
+        <dependency>
+            <groupId>edu.java</groupId>
+            <artifactId>model</artifactId>
+            <version>0.1</version>
+            <scope>compile</scope>
+        </dependency>
+
 
         <!-- Tests -->
 

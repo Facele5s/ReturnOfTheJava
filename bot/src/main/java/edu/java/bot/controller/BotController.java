@@ -1,7 +1,7 @@
 package edu.java.bot.controller;
 
-import edu.java.bot.dto.LinkUpdate;
 import edu.java.bot.service.BotService;
+import edu.java.dto.request.LinkUpdateRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -13,7 +13,7 @@ public class BotController {
     private final BotService service;
 
     @PostMapping("/updates")
-    public void postUpdates(@RequestBody LinkUpdate request) {
+    public void postUpdates(@RequestBody LinkUpdateRequest request) {
         service.sendNotification(request);
     }
 }

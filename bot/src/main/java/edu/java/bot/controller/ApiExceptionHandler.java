@@ -1,6 +1,6 @@
 package edu.java.bot.controller;
 
-import edu.java.bot.dto.ApiErrorResponse;
+import edu.java.dto.response.ApiErrorResponse;
 import java.util.Arrays;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;

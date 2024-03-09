@@ -1,6 +1,6 @@
-package edu.java.exception;
+package edu.java.dto.exception;
 
-import edu.java.dto.ApiErrorResponse;
+import edu.java.dto.response.ApiErrorResponse;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
