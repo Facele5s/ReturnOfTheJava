@@ -4,6 +4,6 @@ CREATE TABLE IF NOT EXISTS Chat_Link
     link_id BIGINT NOT NULL,
 
     PRIMARY KEY (chat_id, link_id),
-    FOREIGN KEY (chat_id) REFERENCES chat(id) ON DELETE CASCADE,
-    FOREIGN KEY (link_id) REFERENCES link(id) ON DELETE CASCADE
+    FOREIGN KEY (chat_id) REFERENCES chat(id),
+    FOREIGN KEY (link_id) REFERENCES link(id)
 );
