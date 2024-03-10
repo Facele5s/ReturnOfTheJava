@@ -17,12 +17,12 @@ public class BotControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    /*@Test
-    @DisplayName("Проверка POST /updates")
-    public void postTest() throws Exception {
+    @Test
+    @DisplayName("Update sending")
+    public void updatesTest() throws Exception {
         mockMvc.perform(post("/updates")
             .contentType("application/json")
                 .content("{\"id\":100500,\"url\":\"http://google.com\",\"description\":\"test\",\"tgChatIds\":[0,0]}"))
             .andExpect(status().isOk());
-    }*/
+    }
 }
