@@ -8,7 +8,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 public class GitHubClient {
     private final WebClient webClient;
 
-    public GitHubClient(@Qualifier("githubClient") WebClient webClient) {
+    public GitHubClient(@Qualifier("githubWebClient") WebClient webClient) {
         this.webClient = webClient;
     }
 

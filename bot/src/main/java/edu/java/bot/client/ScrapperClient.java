@@ -6,30 +6,29 @@ import edu.java.dto.request.RemoveLinkRequest;
 import edu.java.dto.response.ApiErrorResponse;
 import edu.java.dto.response.LinkResponse;
 import edu.java.dto.response.ListLinkResponse;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.reactive.function.BodyInserters;
+import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
+@Component
 public class ScrapperClient {
     private final WebClient webClient;
 
-    private static final String DEFAULT_BASE_URL = "localhost";
     private static final String ENDPOINT_TG_CHAT = "/tg-chat/{id}";
-    private static final String ENDPOINT_LINKS = "links";
+    private static final String ENDPOINT_LINKS = "/links";
 
-    private static final String HEADER_TG_CHAT_ID = "Tg-chat-id";
+    private static final String HEADER_TG_CHAT_ID = "Tg-Chat-id";
 
-    public ScrapperClient(String baseUrl) {
-        String url = baseUrl.isEmpty() ? DEFAULT_BASE_URL : baseUrl;
-
-        this.webClient = WebClient.builder().baseUrl(url).build();
+    public ScrapperClient(@Qualifier("scrapperWebClient") WebClient webClient) {
+        this.webClient = webClient;
     }
 
-    public void registerChat(Long id) {
+    public void registerChat(Long chatId) {
         webClient
             .post()
-            .uri(ENDPOINT_TG_CHAT + id)
+            .uri(ENDPOINT_TG_CHAT + chatId)
             .retrieve()
             .onStatus(
                 HttpStatus.BAD_REQUEST::equals,
@@ -37,10 +36,10 @@ public class ScrapperClient {
             ).bodyToMono(String.class).block();
     }
 
-    public void deleteChat(Long id) {
+    public void deleteChat(Long chatId) {
         webClient
             .delete()
-            .uri(ENDPOINT_TG_CHAT + id)
+            .uri(ENDPOINT_TG_CHAT + chatId)
             .retrieve()
             .onStatus(
                 HttpStatus.BAD_REQUEST::equals,
@@ -53,11 +52,11 @@ public class ScrapperClient {
             .bodyToMono(String.class).block();
     }
 
-    public ListLinkResponse getLinks(Long id) {
+    public ListLinkResponse getLinks(Long chatId) {
         return webClient
             .get()
             .uri(ENDPOINT_LINKS)
-            .header(HEADER_TG_CHAT_ID, String.valueOf(id))
+            .header(HEADER_TG_CHAT_ID, String.valueOf(chatId))
             .retrieve()
             .onStatus(
                 HttpStatus.BAD_REQUEST::equals,
@@ -70,12 +69,12 @@ public class ScrapperClient {
             .bodyToMono(ListLinkResponse.class).block();
     }
 
-    public LinkResponse addLink(Long id, AddLinkRequest request) {
+    public LinkResponse addLink(Long chatId, AddLinkRequest request) {
         return webClient
             .post()
             .uri(ENDPOINT_LINKS)
-            .header(HEADER_TG_CHAT_ID, String.valueOf(id))
-            .body(BodyInserters.fromValue(request))
+            .header(HEADER_TG_CHAT_ID, String.valueOf(chatId))
+            .bodyValue(request)
             .retrieve()
             .onStatus(
                 HttpStatus.BAD_REQUEST::equals,
@@ -88,12 +87,12 @@ public class ScrapperClient {
             .bodyToMono(LinkResponse.class).block();
     }
 
-    public LinkResponse deleteLink(Long id, RemoveLinkRequest request) {
+    public LinkResponse deleteLink(Long chatId, RemoveLinkRequest request) {
         return webClient
             .method(HttpMethod.DELETE)
             .uri(ENDPOINT_LINKS)
-            .header(HEADER_TG_CHAT_ID, String.valueOf(id))
-            .body(BodyInserters.fromValue(request))
+            .header(HEADER_TG_CHAT_ID, String.valueOf(chatId))
+            .bodyValue(request)
             .retrieve()
             .onStatus(
                 HttpStatus.BAD_REQUEST::equals,

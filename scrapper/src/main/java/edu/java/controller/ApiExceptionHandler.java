@@ -5,30 +5,33 @@ import edu.java.dto.exception.NotFoundException;
 import edu.java.dto.response.ApiErrorResponse;
 import java.util.Arrays;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
 public class ApiExceptionHandler {
 
-    @ExceptionHandler(BadRequestException.class)
-    public ApiErrorResponse handleBadRequest(BadRequestException e) {
-        return new ApiErrorResponse(
-            e.getDescription(),
-            HttpStatus.BAD_REQUEST.getReasonPhrase(),
-            e.getClass().getSimpleName(),
-            e.getMessage(),
-            Arrays.stream(e.getStackTrace())
-                .map(StackTraceElement::toString)
-                .toList()
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity<ApiErrorResponse> handleNotFound(NotFoundException e) {
+        return new ResponseEntity<>(
+            convertException(e, HttpStatus.NOT_FOUND, e.getDescription()),
+            HttpStatus.NOT_FOUND
         );
     }
 
-    @ExceptionHandler(NotFoundException.class)
-    public ApiErrorResponse handleNotFound(NotFoundException e) {
+    @ExceptionHandler(BadRequestException.class)
+    public ResponseEntity<ApiErrorResponse> handleBadRequest(BadRequestException e) {
+        return new ResponseEntity<>(
+            convertException(e, HttpStatus.BAD_REQUEST, e.getDescription()),
+            HttpStatus.BAD_REQUEST
+        );
+    }
+
+    private ApiErrorResponse convertException(Exception e, HttpStatus status, String description) {
         return new ApiErrorResponse(
-            e.getDescription(),
-            HttpStatus.NOT_FOUND.getReasonPhrase(),
+            description,
+            status.getReasonPhrase(),
             e.getClass().getSimpleName(),
             e.getMessage(),
             Arrays.stream(e.getStackTrace())

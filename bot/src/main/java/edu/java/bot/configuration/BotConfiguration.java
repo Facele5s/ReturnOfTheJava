@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class BotConfig {
+public class BotConfiguration {
     @NotNull
     @Value("${app.telegram-token}")
     String telegramToken;

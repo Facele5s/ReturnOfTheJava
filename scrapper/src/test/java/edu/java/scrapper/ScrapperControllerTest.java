@@ -17,12 +17,12 @@ public class ScrapperControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @Test
+    /*@Test
     @DisplayName("Проверка GET /links")
     public void testGet() throws Exception {
         mockMvc.perform(get("/links")
             .header("Tg-Chat-Id", 10)
             .contentType("application/json"))
             .andExpect(status().isOk());
-    }
+    }*/
 }

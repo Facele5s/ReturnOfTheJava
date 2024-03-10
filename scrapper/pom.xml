@@ -37,6 +37,13 @@
             <artifactId>spring-boot-starter-webflux</artifactId>
         </dependency>
 
+        <!-- DTO -->
+        <dependency>
+            <groupId>edu.java</groupId>
+            <artifactId>model</artifactId>
+            <version>0.1</version>
+        </dependency>
+
         <!-- Kafka -->
         <dependency>
             <groupId>org.springframework.kafka</groupId>
@@ -61,20 +68,11 @@
             <optional>true</optional>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-core -->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-core</artifactId>
             <version>2.16.1</version>
         </dependency>
-
-        <dependency>
-            <groupId>edu.java</groupId>
-            <artifactId>model</artifactId>
-            <version>0.1</version>
-            <scope>compile</scope>
-        </dependency>
-
 
         <!-- Tests -->
 

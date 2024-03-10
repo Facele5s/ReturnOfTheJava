@@ -3,26 +3,26 @@ package edu.java.client;
 import edu.java.dto.exception.ApiErrorResponseException;
 import edu.java.dto.request.LinkUpdateRequest;
 import edu.java.dto.response.ApiErrorResponse;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.reactive.function.BodyInserters;
+import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
+@Component
 public class BotClient {
     private final WebClient webClient;
 
-    private static final String DEFAULT_BASE_URL = "localhost";
+    private static final String ENDPOINT_UPDATES = "/updates";
 
-    public BotClient(String baseUrl) {
-        String url = baseUrl.isEmpty() ? DEFAULT_BASE_URL : baseUrl;
-
-        this.webClient = WebClient.builder().baseUrl(url).build();
+    public BotClient(@Qualifier("botWebClient") WebClient webClient) {
+        this.webClient = webClient;
     }
 
     public LinkUpdateRequest sendUpdate(LinkUpdateRequest request) {
         return webClient
             .post()
-            .uri("/updates")
-            .body(BodyInserters.fromValue(request))
+            .uri(ENDPOINT_UPDATES)
+            .bodyValue(request)
             .retrieve()
             .onStatus(
                 HttpStatus.BAD_REQUEST::equals,
