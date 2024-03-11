@@ -14,52 +14,54 @@ import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class CommandsTest {
-    private final List<String> linksList = List.of(
+    private final List<String> basicLinksList = List.of(
         "link1",
         "link2",
         "link3"
     );
 
-    private final List<Command> commandsList = List.of(
+    private final List<Command> basicCommandsList = List.of(
         new StartCommand(),
         new HelpCommand(List.of(new StartCommand())),
-        new ListCommand(linksList),
-        new TrackCommand(linksList),
-        new UntrackCommand(linksList)
+        new ListCommand(basicLinksList),
+        new TrackCommand(basicLinksList),
+        new UntrackCommand(basicLinksList)
     );
 
     @Test
-    @DisplayName("Start command test")
+    @DisplayName("Start command")
     public void startTest() {
-        ObserverBot bot = new ObserverBot(null, commandsList, new ArrayList<>());
-
+        ObserverBot bot = getBot(basicCommandsList);
         String command = "/start";
+
         String responseText = getReply(bot, command);
+
         assertEquals("Hello! I'm link observer bot!\n"
             + "Use /help to get information about commands", responseText);
     }
 
     @Test
-    @DisplayName("Help command test")
+    @DisplayName("Help command")
     public void helpTest() {
-        ObserverBot bot = new ObserverBot(null, commandsList, new ArrayList<>());
-
+        ObserverBot bot = getBot(basicCommandsList);
         String command = "/help";
+
         String responseText = getReply(bot, command);
+
         assertEquals("Commands:\n" +
             "/start - Registers a user", responseText);
     }
 
     @Test
-    @DisplayName("List command test")
+    @DisplayName("List command")
     public void listTest() {
-        ObserverBot bot = new ObserverBot(null, commandsList, linksList);
-
+        ObserverBot bot = getBot(basicCommandsList);
         String command = "/list";
+
         String responseText = getReply(bot, command);
+
         assertEquals("Observed links:\n" +
             "link1\n" +
             "link2\n" +
@@ -67,60 +69,95 @@ public class CommandsTest {
     }
 
     @Test
-    @DisplayName("Track command test")
+    @DisplayName("Track command correct")
     public void trackTest() {
-        List<String> links = new ArrayList<>();
-        Command customTrackCommand = new TrackCommand(links);
-        ObserverBot bot = new ObserverBot(null, List.of(customTrackCommand), null);
-
+        List<Command> customCommandList = List.of(new TrackCommand(new ArrayList<>()));
+        ObserverBot bot = getBot(customCommandList);
         String command = "/track re4l_l1nk";
+
         String responseText = getReply(bot, command);
+
         assertEquals("The link is observed now:\n" +
             "re4l_l1nk", responseText);
-        assertTrue(links.contains("re4l_l1nk"));
+    }
 
-        responseText = getReply(bot, command);
+    @Test
+    @DisplayName("Track command with repeated link addition")
+    public void trackRepeatTest() {
+        List<String> customLinksList = new ArrayList<>();
+        customLinksList.add("re4l_l1nk");
+        List<Command> customCommandList = List.of(new TrackCommand(customLinksList));
+        ObserverBot bot = getBot(customCommandList);
+        String command = "/track re4l_l1nk";
+        getReply(bot, command);
+
+        String responseText = getReply(bot, command);
+
         assertEquals("The link is already observed.", responseText);
+    }
 
-        command = "/track";
-        responseText = getReply(bot, command);
+    @Test
+    @DisplayName("Track command with invalid link")
+    public void trackInvalidTest() {
+        ObserverBot bot = getBot(basicCommandsList);
+        String commandIncorrect = "/track";
+
+        String responseText = getReply(bot, commandIncorrect);
+
         assertEquals("The link is incorrect!", responseText);
     }
 
     @Test
-    @DisplayName("Untrack command test")
+    @DisplayName("Untrack command correct")
     public void untrackTest() {
-        List<String> links = new ArrayList<>();
-        links.add("re4l_l1nk");
-        Command customTrackCommand = new UntrackCommand(links);
-        ObserverBot bot = new ObserverBot(null, List.of(customTrackCommand), null);
-
+        List<String> customLinksList = new ArrayList<>();
+        customLinksList.add("re4l_l1nk");
+        List<Command> customCommandList = List.of(new UntrackCommand(customLinksList));
+        ObserverBot bot = getBot(customCommandList);
         String command = "/untrack re4l_l1nk";
+
         String responseText = getReply(bot, command);
+
         assertEquals("The link is not observed now:\n" +
             "re4l_l1nk", responseText);
+    }
 
+    @Test
+    @DisplayName("Untrack command with unexisted link")
+    public void untrackUnexistedLinkTest() {
+        List<String> customLinksList = new ArrayList<>();
+        List<Command> customCommandList = List.of(new UntrackCommand(customLinksList));
+        ObserverBot bot = getBot(customCommandList);
+        String command = "/untrack re4l_l1nk";
 
-        responseText = getReply(bot, command);
+        String responseText = getReply(bot, command);
+
         assertEquals("There is no such observed link.", responseText);
+    }
 
-        command = "/untrack";
-        responseText = getReply(bot, command);
+    @Test
+    @DisplayName("Untrack command with ivalid link")
+    public void untrackInvalidTest() {
+        ObserverBot bot = getBot(basicCommandsList);
+        String commandIncorrect = "/untrack";
+
+        String responseText = getReply(bot, commandIncorrect);
+
         assertEquals("The link is incorrect!", responseText);
     }
 
     @Test
-    @DisplayName("Incorrect command test")
+    @DisplayName("Incorrect command")
     public void incorrectTest() {
-        ObserverBot bot = new ObserverBot(null, commandsList, null);
+        ObserverBot bot = getBot(basicCommandsList);
+        String incorrectCommand1 = "/begin";
+        String incorrectCommand2 = "start";
 
-        String command = "/begin";
-        String responseText = getReply(bot, command);
-        assertEquals("The command is incorrect!", responseText);
+        String responseText1 = getReply(bot, incorrectCommand1);
+        String responseText2 = getReply(bot, incorrectCommand2);
 
-        command = "start";
-        responseText = getReply(bot, command);
-        assertEquals("The command is incorrect!", responseText);
+        assertEquals("The command is incorrect!", responseText1);
+        assertEquals("The command is incorrect!", responseText2);
     }
 
     private String getReply(ObserverBot bot, String command) {
@@ -129,5 +166,9 @@ public class CommandsTest {
         SendMessage response = bot.processMessage(update);
 
         return response.getParameters().get("text").toString();
+    }
+
+    private ObserverBot getBot(List<Command> commandsList) {
+        return new ObserverBot(null, commandsList, basicLinksList);
     }
 }
