@@ -1,10 +1,10 @@
 package edu.java.client.stackoverflow;
 
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
-@Service
+@Component
 public class StackOverFlowClient {
     private final WebClient webClient;
 
