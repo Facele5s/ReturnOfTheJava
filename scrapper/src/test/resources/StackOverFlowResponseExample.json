@@ -1,0 +1,36 @@
+{
+    "items": [
+        {
+            "tags": [
+                "java",
+                "spring",
+                "spring-mvc",
+                "spring-boot"
+            ],
+            "owner": {
+                "account_id": 14839195,
+                "reputation": 151,
+                "user_id": 10716398,
+                "user_type": "registered",
+                "profile_image": "https://www.gravatar.com/avatar/4ae91a4c404eb8e61d13b24620e83064?s=256&d=identicon&r=PG&f=y&so-version=2",
+                "display_name": "Banjit Das",
+                "link": "https://stackoverflow.com/users/10716398/banjit-das"
+            },
+            "is_answered": true,
+            "view_count": 66357,
+            "closed_date": 1544347330,
+            "answer_count": 1,
+            "score": 15,
+            "last_activity_date": 1680962078,
+            "creation_date": 1544338969,
+            "last_edit_date": 1680962078,
+            "question_id": 53690136,
+            "link": "https://stackoverflow.com/questions/53690136/the-import-javax-annotation-postconstruct-cannot-be-resolved",
+            "closed_reason": "Duplicate",
+            "title": "The import javax.annotation.PostConstruct cannot be resolved"
+        }
+    ],
+    "has_more": false,
+    "quota_max": 300,
+    "quota_remaining": 291
+}
