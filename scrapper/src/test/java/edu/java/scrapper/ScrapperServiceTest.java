@@ -11,8 +11,7 @@ import org.junit.jupiter.api.Test;
 import java.net.URI;
 import java.util.Arrays;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class ScrapperServiceTest {
     private ScrapperService service;
@@ -32,65 +31,55 @@ public class ScrapperServiceTest {
     @Test
     @DisplayName("Check for chat re-registration")
     public void registerChatTwiceTest() {
-        try {
+        assertThrows(BadRequestException.class, () -> {
             service.registerChat(2L);
-        } catch (BadRequestException e) {
-            assertTrue(true);
-        }
+        });
     }
 
     @Test
     @DisplayName("Check the chat for existence before deleting ")
     public void deleteUnexistedChatTest() {
-        try {
+        assertThrows(NotFoundException.class, () -> {
             service.deleteChat(3L);
-        } catch (NotFoundException e) {
-            assertTrue(true);
-        }
+        });
     }
 
     @Test
     @DisplayName("Check for link re-adding")
-    public void addLinkTwiceTest() throws Exception {
-        try {
+    public void addLinkTwiceTest() {
+        assertThrows(BadRequestException.class, () -> {
             service.addLink(1L, new LinkResponse(1L, new URI("link1")));
-        } catch (BadRequestException e) {
-            assertTrue(true);
-        }
+        });
     }
 
     @Test
     @DisplayName("Check the link for existence before deleting")
-    public void deleteUnexistedLinkTest() throws Exception {
-        try {
-            service.deleteLink(1L, new LinkResponse(1L, new URI("link100500")));
-        } catch (NotFoundException e) {
-            assertTrue(true);
-        }
+    public void deleteUnexistedLinkTest() {
+        assertThrows(NotFoundException.class, () -> {
+            service.deleteLink(1L, new LinkResponse(1000500L, new URI("link100500")));
+        });
     }
 
     @Test
     @DisplayName("Getting links check")
     public void getLinksTest() throws Exception {
+        //Arrange
         ListLinkResponse expectedLinksList = new ListLinkResponse(Arrays.asList(
             new LinkResponse(1L, new URI("link1")),
             new LinkResponse(2L, new URI("link2")),
             new LinkResponse(3L, new URI("link3"))
         ), 0);
 
-        try {
+        //Act + Assert
+        assertThrows(NotFoundException.class, () -> {
             service.getLinks(10L);
-        } catch (NotFoundException e) {
-            assertTrue(true);
-        }
+        });
 
-        try {
-            ListLinkResponse actualList = service.getLinks(1L);
+        //Act
+        ListLinkResponse actualList = service.getLinks(1L);
 
-            assertEquals(expectedLinksList, actualList);
-        } catch (NotFoundException e) {
-            fail();
-        }
+        //Assert
+        assertEquals(expectedLinksList, actualList);
     }
 
 }

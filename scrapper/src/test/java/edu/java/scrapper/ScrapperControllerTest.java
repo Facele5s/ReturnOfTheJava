@@ -38,10 +38,12 @@ public class ScrapperControllerTest {
     @Test
     @DisplayName("Link adding")
     public void linkAddTest() throws Exception {
+        //Arrange
         String response = "{\n" +
             "  \"link\": \"string\"\n" +
             "}";
 
+        //Act + Assert
         mockMvc.perform(post("/links")
                 .contentType(MediaType.APPLICATION_JSON)
                 .header("Tg-Chat-id", 3)
@@ -52,10 +54,12 @@ public class ScrapperControllerTest {
     @Test
     @DisplayName("Link deleting")
     public void linkDeleteTest() throws Exception {
+        //Arrange
         String response = "{\n" +
             "  \"link\": \"string\"\n" +
             "}";
 
+        //Act + Assert
         mockMvc.perform(post("/links")
                 .contentType(MediaType.APPLICATION_JSON)
                 .header("Tg-Chat-id", 4)
