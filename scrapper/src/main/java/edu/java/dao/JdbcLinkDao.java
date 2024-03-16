@@ -1,7 +1,7 @@
 package edu.java.dao;
 
-import edu.java.entity.Chat;
 import edu.java.entity.Link;
+import java.net.URI;
 import java.time.OffsetDateTime;
 import java.util.Collection;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +16,8 @@ public class JdbcLinkDao {
     private static final String QUERY_ADD = "INSERT INTO link (chat_id, url) VALUES (?, ?) RETURNING *";
     private static final String QUERY_REMOVE = "DELETE FROM link WHERE id = ? RETURNING *";
     private static final String QUERY_FIND_ALL = "SELECT * FROM link";
-    private static final String QUERY_FIND_BY_CHAT = "SELECT * FROM link WHERE id = ?";
+    private static final String QUERY_FIND_BY_ID = "SELECT * FROM link WHERE id = ?";
+    private static final String QUERY_FIND_BY_CHAT = "SELECT * FROM link WHERE chat_id = ?";
     private static final String QUERY_FIND_BY_URL = "SELECT * FROM link WHERE url = ?";
     private static final String QUERY_FIND_LONG_UNCHECKED = "SELECT * FROM link WHERE checked_at < ?";
     private static final String QUERY_UPDATE_LINK = "UPDATE link SET updated_at = ? WHERE id = ?";
@@ -25,21 +26,21 @@ public class JdbcLinkDao {
     private final JdbcTemplate jdbcTemplate;
 
     @Transactional
-    public Link add(Link link) {
+    public Link add(Long chatId, URI url) {
         return jdbcTemplate.queryForObject(
             QUERY_ADD,
             new BeanPropertyRowMapper<>(Link.class),
-            link.getChatId(),
-            link.getUrl()
+            chatId,
+            url
         );
     }
 
     @Transactional
-    public Link remove(Link link) {
+    public Link remove(Long linkId) {
         return jdbcTemplate.queryForObject(
             QUERY_REMOVE,
             new BeanPropertyRowMapper<>(Link.class),
-            link.getId()
+            linkId
         );
     }
 
@@ -49,13 +50,22 @@ public class JdbcLinkDao {
     }
 
     @Transactional
-    public Collection<Link> findByChat(Chat chat) {
-        return jdbcTemplate.query(QUERY_FIND_BY_CHAT, new BeanPropertyRowMapper<>(Link.class), chat.getId());
+    public Link findById(Long linkId) {
+        return jdbcTemplate.queryForObject(
+            QUERY_FIND_BY_ID,
+            new BeanPropertyRowMapper<>(Link.class),
+            linkId
+        );
     }
 
     @Transactional
-    public Collection<Link> findByUrl(Link link) {
-        return jdbcTemplate.query(QUERY_FIND_BY_URL, new BeanPropertyRowMapper<>(Link.class), link.getUrl());
+    public Collection<Link> findByChat(Long chatId) {
+        return jdbcTemplate.query(QUERY_FIND_BY_CHAT, new BeanPropertyRowMapper<>(Link.class), chatId);
+    }
+
+    @Transactional
+    public Collection<Link> findByUrl(URI url) {
+        return jdbcTemplate.query(QUERY_FIND_BY_URL, new BeanPropertyRowMapper<>(Link.class), url);
     }
 
     @Transactional
@@ -64,21 +74,22 @@ public class JdbcLinkDao {
     }
 
     @Transactional
-    public Link updateLink(Link link) {
+    public Link updateLink(Long linkId, OffsetDateTime updateDate) {
         return jdbcTemplate.queryForObject(
             QUERY_UPDATE_LINK,
             new BeanPropertyRowMapper<>(Link.class),
-            link.getId()
+            updateDate,
+            linkId
         );
     }
 
     @Transactional
-    public Link checkLink(Link link) {
+    public Link checkLink(Long linkId, OffsetDateTime checkDate) {
         return jdbcTemplate.queryForObject(
             QUERY_CHECK_LINK,
             new BeanPropertyRowMapper<>(Link.class),
-            link.getId()
+            checkDate,
+            linkId
         );
     }
-
 }
