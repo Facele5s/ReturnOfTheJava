@@ -17,9 +17,11 @@ import java.nio.charset.StandardCharsets;
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class GitHubClientTest {
+    private static final File FILE = new File("src/test/resources/GitHubResponseExample.json");
+
     private static WireMockServer wireMockServer;
     private static GitHubClient gitHubClient;
     private static String baseUrl = "http://localhost:8080";
@@ -39,11 +41,10 @@ public class GitHubClientTest {
     }
 
     @Test
-    @DisplayName("Getting repository info")
-    public void getRepoInfo() throws IOException {
-        File file = new File("src/test/resources/GitHubResponseExample.json");
-        String responseString = FileUtils.readFileToString(file, StandardCharsets.UTF_8);
-
+    @DisplayName("Repository info test")
+    public void getRepoInfoTest() throws IOException {
+        //Arrange
+        String responseString = FileUtils.readFileToString(FILE, StandardCharsets.UTF_8);
         stubFor(get("/repos/testUser/testRepo")
             .willReturn(aResponse()
                 .withStatus(200)
@@ -51,8 +52,10 @@ public class GitHubClientTest {
                 .withBody(responseString))
         );
 
+        //Act
         GitHubResponse response = gitHubClient.getResponse("testUser", "testRepo");
 
+        //Assert
         assertEquals(674765843, response.id());
         assertEquals("Graph_GUI", response.name());
         assertEquals("2023-08-12T00:48:01Z", response.pushedAt().toString());
