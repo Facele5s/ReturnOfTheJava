@@ -8,6 +8,7 @@ import edu.java.dto.response.ListChatResponse;
 import edu.java.entity.Chat;
 import edu.java.service.ChatService;
 import java.time.OffsetDateTime;
+import java.util.Collection;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DuplicateKeyException;
@@ -76,5 +77,10 @@ public class JdbcChatService implements ChatService {
                 DESC_GET_UNREG
             );
         }
+    }
+
+    @Override
+    public Collection<Chat> getChatByLink(Long linkId) {
+        return chatDao.findByLink(linkId);
     }
 }

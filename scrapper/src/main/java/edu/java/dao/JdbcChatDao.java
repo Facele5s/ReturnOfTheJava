@@ -16,6 +16,8 @@ public class JdbcChatDao {
     private static final String QUERY_REMOVE = "DELETE FROM chat WHERE id = ? RETURNING *";
     private static final String QUERY_FIND_ALL = "SELECT * FROM chat";
     private static final String QUERY_FIND_BY_ID = "SELECT * FROM chat WHERE id = ?";
+    private static final String QUERY_FIND_BY_CHAT =
+        "SELECT * FROM chat WHERE id IN (SELECT chat_id FROM chat_link WHERE link_id = ?)";
 
     private final JdbcTemplate jdbcTemplate;
 
@@ -49,5 +51,10 @@ public class JdbcChatDao {
             new BeanPropertyRowMapper<>(Chat.class),
             chatId
         );
+    }
+
+    @Transactional
+    public Collection<Chat> findByLink(Long linkId) {
+        return jdbcTemplate.query(QUERY_FIND_BY_CHAT, new BeanPropertyRowMapper<>(Chat.class), linkId);
     }
 }

@@ -8,7 +8,9 @@ import edu.java.dto.response.ListLinkResponse;
 import edu.java.entity.Link;
 import edu.java.service.LinkService;
 import java.net.URI;
+import java.time.Duration;
 import java.time.OffsetDateTime;
+import java.util.Collection;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DuplicateKeyException;
@@ -102,13 +104,8 @@ public class JdbcLinkService implements LinkService {
     }
 
     @Override
-    public ListLinkResponse getLongUncheckedLinks(OffsetDateTime dateTime) {
-        List<LinkResponse> linkResponseList = linkDao.findLongUnchecked(dateTime)
-            .stream()
-            .map(link -> new LinkResponse(link.getId(), link.getUrl()))
-            .toList();
-
-        return new ListLinkResponse(linkResponseList, linkResponseList.size());
+    public Collection<Link> getLongUncheckedLinks(Duration duration) {
+        return linkDao.findLongUnchecked(duration);
     }
 
     @Override

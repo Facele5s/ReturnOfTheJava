@@ -2,6 +2,8 @@ package edu.java.dao;
 
 import edu.java.entity.Link;
 import java.net.URI;
+import java.sql.Timestamp;
+import java.time.Duration;
 import java.time.OffsetDateTime;
 import java.util.Collection;
 import lombok.RequiredArgsConstructor;
@@ -69,8 +71,12 @@ public class JdbcLinkDao {
     }
 
     @Transactional
-    public Collection<Link> findLongUnchecked(OffsetDateTime dateTime) {
-        return jdbcTemplate.query(QUERY_FIND_LONG_UNCHECKED, new BeanPropertyRowMapper<>(Link.class), dateTime);
+    public Collection<Link> findLongUnchecked(Duration duration) {
+        return jdbcTemplate.query(
+            QUERY_FIND_LONG_UNCHECKED,
+            new BeanPropertyRowMapper<>(Link.class),
+            Timestamp.from(OffsetDateTime.now().minusSeconds(duration.getSeconds()).toInstant())
+        );
     }
 
     @Transactional

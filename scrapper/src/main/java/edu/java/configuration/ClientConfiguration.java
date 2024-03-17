@@ -18,7 +18,7 @@ public class ClientConfiguration {
     String stackOverFlowBaseUrl;
 
     @NotNull
-    @Value("${client.base-url.bot:https://localhost}")
+    @Value("${client.base-url.bot:https://localhost:8090}")
     String botBaseUrl;
 
     @Bean("githubWebClient")
