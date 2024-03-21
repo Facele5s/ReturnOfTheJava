@@ -8,8 +8,10 @@ import edu.java.dto.response.ListLinkResponse;
 import edu.java.service.ScrapperService;
 import edu.java.service.jdbc.JdbcChatService;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import java.net.URI;
 import java.util.Arrays;
@@ -17,19 +19,22 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
+@Disabled
 public class ScrapperServiceTest {
+    @Mock
     private ScrapperService service;
 
-    /*@BeforeEach
+
+
+    @BeforeEach
     public void serviceInit() throws Exception {
-        this.service = new ScrapperService();
 
         service.registerChat(1L);
         service.registerChat(2L);
 
-        service.addLink(1L, new LinkResponse(1L, new URI("link1")));
-        service.addLink(1L, new LinkResponse(2L, new URI("link2")));
-        service.addLink(1L, new LinkResponse(3L, new URI("link3")));
+        service.addLink(new LinkResponse(1L, new URI("link1")));
+        service.addLink(new LinkResponse(2L, new URI("link2")));
+        service.addLink(new LinkResponse(3L, new URI("link3")));
     }
 
     @Test
@@ -56,7 +61,7 @@ public class ScrapperServiceTest {
     @DisplayName("Check for link re-adding")
     public void addLinkTwiceTest() throws Exception {
         try {
-            service.addLink(1L, new LinkResponse(1L, new URI("link1")));
+            service.addLink(new LinkResponse(1L, new URI("link1")));
         } catch (BadRequestException e) {
             assertTrue(true);
         }
@@ -66,7 +71,7 @@ public class ScrapperServiceTest {
     @DisplayName("Check the link for existence before deleting")
     public void deleteUnexistedLinkTest() throws Exception {
         try {
-            service.deleteLink(1L, new LinkResponse(1L, new URI("link100500")));
+            service.deleteLink(new LinkResponse(1L, new URI("link100500")));
         } catch (NotFoundException e) {
             assertTrue(true);
         }
@@ -94,6 +99,6 @@ public class ScrapperServiceTest {
         } catch (NotFoundException e) {
             fail();
         }
-    }*/
+    }
 
 }

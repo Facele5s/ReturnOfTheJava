@@ -13,6 +13,7 @@ import edu.java.bot.command.TrackCommand;
 import edu.java.bot.command.UntrackCommand;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
@@ -32,6 +33,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.verify;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+@Disabled
 public class CommandsTest {
     private final WebClient webClient = WebClient.builder()
         .baseUrl("http://localhost:8080")
@@ -45,12 +47,12 @@ public class CommandsTest {
         URI.create("link3")
     );
 
-    /*private final List<Command> basicCommandsList = List.of(
+    private final List<Command> basicCommandsList = List.of(
         new StartCommand(scrapperClient),
         new HelpCommand(List.of(new StartCommand(scrapperClient))),
         new ListCommand(new ScrapperClient(null), basicLinksList),
-        new TrackCommand(scrapperClient, basicLinksList),
-        new UntrackCommand(scrapperClient, basicLinksList)
+        new TrackCommand(scrapperClient),
+        new UntrackCommand(scrapperClient)
     );
 
     @BeforeAll
@@ -77,8 +79,7 @@ public class CommandsTest {
                 //.withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 //.withBody(responseString))
             ));
-        StepVerifier.create(scrapperClient.registerChat(100500L))
-            .verifyComplete();
+
 
         verify(postRequestedFor(urlEqualTo("/tg-chat/100500")));
         //String responseText = getReply(bot, command);
@@ -128,7 +129,7 @@ public class CommandsTest {
     @Test
     @DisplayName("Track command correct")
     public void trackTest() {
-        List<Command> customCommandList = List.of(new TrackCommand(scrapperClient, new ArrayList<>()));
+        List<Command> customCommandList = List.of(new TrackCommand(scrapperClient));
         ObserverBot bot = getBot(customCommandList);
         String command = "/track re4l_l1nk";
 
@@ -143,7 +144,7 @@ public class CommandsTest {
     public void trackRepeatTest() {
         List<URI> customLinksList = new ArrayList<>();
         customLinksList.add(URI.create("re4l_l1nk"));
-        List<Command> customCommandList = List.of(new TrackCommand(scrapperClient, customLinksList));
+        List<Command> customCommandList = List.of(new TrackCommand(scrapperClient));
         ObserverBot bot = getBot(customCommandList);
         String command = "/track re4l_l1nk";
         getReply(bot, command);
@@ -169,7 +170,7 @@ public class CommandsTest {
     public void untrackTest() {
         List<URI> customLinksList = new ArrayList<>();
         customLinksList.add(URI.create("re4l_l1nk"));
-        List<Command> customCommandList = List.of(new UntrackCommand(scrapperClient, customLinksList));
+        List<Command> customCommandList = List.of(new UntrackCommand(scrapperClient));
         ObserverBot bot = getBot(customCommandList);
         String command = "/untrack re4l_l1nk";
 
@@ -183,7 +184,7 @@ public class CommandsTest {
     @DisplayName("Untrack command with unexisted link")
     public void untrackUnexistedLinkTest() {
         List<URI> customLinksList = new ArrayList<>();
-        List<Command> customCommandList = List.of(new UntrackCommand(scrapperClient, customLinksList));
+        List<Command> customCommandList = List.of(new UntrackCommand(scrapperClient));
         ObserverBot bot = getBot(customCommandList);
         String command = "/untrack re4l_l1nk";
 
@@ -229,5 +230,4 @@ public class CommandsTest {
     private ObserverBot getBot(List<Command> commandsList) {
         return new ObserverBot(null, commandsList);
     }
-    */
 }
