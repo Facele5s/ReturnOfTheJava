@@ -26,15 +26,15 @@ public class ScrapperClient {
         this.webClient = webClient;
     }
 
-    public Mono<Void> registerChat(Long chatId) {
-        return webClient
+    public void registerChat(Long chatId) {
+        webClient
             .post()
             .uri(ENDPOINT_TG_CHAT + chatId)
             .retrieve()
             .onStatus(
                 HttpStatus.BAD_REQUEST::equals,
                 clientResponse -> clientResponse.bodyToMono(ApiErrorResponse.class).map(ApiErrorResponseException::new)
-            ).bodyToMono(Void.class);
+            ).bodyToMono(Void.class).block();
     }
 
     public void deleteChat(Long chatId) {
