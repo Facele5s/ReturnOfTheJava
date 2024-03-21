@@ -1,7 +1,7 @@
 package edu.java.service.jdbc;
 
 import edu.java.dao.JdbcLinkDao;
-import edu.java.dto.entity.Link;
+import edu.java.entity.Link;
 import edu.java.dto.exception.BadRequestException;
 import edu.java.dto.exception.NotFoundException;
 import edu.java.dto.response.LinkResponse;

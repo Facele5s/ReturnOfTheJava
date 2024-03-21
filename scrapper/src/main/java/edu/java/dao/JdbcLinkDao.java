@@ -1,6 +1,6 @@
 package edu.java.dao;
 
-import edu.java.dto.entity.Link;
+import edu.java.entity.Link;
 import java.net.URI;
 import java.sql.Timestamp;
 import java.time.Duration;
@@ -15,8 +15,10 @@ import org.springframework.transaction.annotation.Transactional;
 @Component
 @RequiredArgsConstructor
 public class JdbcLinkDao {
-    private static final String QUERY_ADD = "INSERT INTO link (chat_id, url) VALUES (?, ?) RETURNING *";
+    private static final String QUERY_ADD = "INSERT INTO link (chat_id, url, updated_at, checked_at) VALUES (?, ?, ?, ?) RETURNING *";
+    private static final String QUERY_ADD_COMBINATION = "INSERT INTO chat_link (chat_id, link_id) VALUES (?, ?)";
     private static final String QUERY_REMOVE = "DELETE FROM link WHERE id = ? RETURNING *";
+    private static final String QUERY_REMOVE_COMBINATION = "DELETE FROM chat_link WHERE link_id = ?";
     private static final String QUERY_FIND_ALL = "SELECT * FROM link";
     private static final String QUERY_FIND_BY_ID = "SELECT * FROM link WHERE id = ?";
     private static final String QUERY_FIND_BY_CHAT = "SELECT * FROM link WHERE chat_id = ?";
@@ -29,21 +31,38 @@ public class JdbcLinkDao {
 
     @Transactional
     public Link add(Long chatId, URI url) {
-        return jdbcTemplate.queryForObject(
+        Link link = jdbcTemplate.queryForObject(
             QUERY_ADD,
             new BeanPropertyRowMapper<>(Link.class),
             chatId,
-            url.toString()
+            url.toString(),
+            OffsetDateTime.now(),
+            OffsetDateTime.now()
         );
+
+        jdbcTemplate.update(
+            QUERY_ADD_COMBINATION,
+            chatId,
+            link.getId()
+        );
+
+        return link;
     }
 
     @Transactional
     public Link remove(Long linkId) {
-        return jdbcTemplate.queryForObject(
+        Link link = jdbcTemplate.queryForObject(
             QUERY_REMOVE,
             new BeanPropertyRowMapper<>(Link.class),
             linkId
         );
+
+        jdbcTemplate.update(
+            QUERY_REMOVE_COMBINATION,
+            link.getId()
+        );
+
+        return link;
     }
 
     @Transactional

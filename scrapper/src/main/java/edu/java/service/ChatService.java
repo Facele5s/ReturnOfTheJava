@@ -1,6 +1,6 @@
 package edu.java.service;
 
-import edu.java.dto.entity.Chat;
+import edu.java.entity.Chat;
 import edu.java.dto.exception.BadRequestException;
 import edu.java.dto.exception.NotFoundException;
 import edu.java.dto.response.ChatResponse;

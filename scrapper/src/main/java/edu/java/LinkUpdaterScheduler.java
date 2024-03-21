@@ -4,7 +4,7 @@ import edu.java.client.BotClient;
 import edu.java.client.Client;
 import edu.java.client.Response;
 import edu.java.configuration.ApplicationConfig;
-import edu.java.dto.entity.Chat;
+import edu.java.entity.Chat;
 import edu.java.dto.exception.NotFoundException;
 import edu.java.dto.request.LinkUpdateRequest;
 import edu.java.service.ChatService;
