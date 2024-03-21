@@ -2,9 +2,13 @@ package edu.java.scrapper.jdbc;
 
 import edu.java.dao.JdbcChatDao;
 import edu.java.dao.JdbcLinkDao;
+import edu.java.entity.Chat;
 import edu.java.scrapper.IntegrationTest;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Rollback;
+import org.springframework.transaction.annotation.Transactional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
@@ -16,21 +20,14 @@ public class JdbcChatDaoTest extends IntegrationTest {
     private JdbcChatDao chatDao;
 
 
-    /*@Test
+    @Test
     @Transactional
-    //@Rollback
-    public void testAddLink() {
-        chatDao.add(null);
+    @Rollback
+    public void testAddChat() {
+        chatDao.add(1L, null);
 
-        linkDao.add(1L, URI.create("linkk"));
+        Chat chat = chatDao.findById(1L);
 
-        Collection<Link> list = linkDao.findAll();
-
-        assertEquals(list.size(), 1);
-
-        List<Link> links = (List<Link>) linkDao.findByChat(1L);
-        assertEquals(links.getFirst().getUrl(), URI.create("linkk"));
-
-
-    }*/
+        System.out.println(chat.getRegistrationDate());
+    }
 }

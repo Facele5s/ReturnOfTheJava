@@ -25,8 +25,8 @@ public class JdbcLinkDao {
     private static final String QUERY_FIND_BY_CHAT = "SELECT * FROM link WHERE chat_id = ?";
     private static final String QUERY_FIND_BY_URL = "SELECT * FROM link WHERE url = ?";
     private static final String QUERY_FIND_LONG_UNCHECKED = "SELECT * FROM link WHERE checked_at < ?";
-    private static final String QUERY_UPDATE_LINK = "UPDATE link SET updated_at = ? WHERE id = ?";
-    private static final String QUERY_CHECK_LINK = "UPDATE link SET checked_at = ? WHERE id = ?";
+    private static final String QUERY_UPDATE_LINK = "UPDATE link SET updated_at = ? WHERE id = ? RETURNING *";
+    private static final String QUERY_CHECK_LINK = "UPDATE link SET checked_at = ? WHERE id = ? RETURNING *";
 
     private final JdbcTemplate jdbcTemplate;
 

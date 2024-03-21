@@ -7,7 +7,7 @@ import java.util.List;
 
 public record StackOverFlowResponse(List<StackOverFlowItem> items) implements Response {
     @Override
-    public OffsetDateTime updatedAt() {
+    public OffsetDateTime getUpdateDate() {
         return items().getFirst().lastActivityDate();
     }
 

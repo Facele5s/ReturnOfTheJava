@@ -10,6 +10,7 @@ import edu.java.entity.Chat;
 import edu.java.service.ChatService;
 import edu.java.service.LinkService;
 import java.time.OffsetDateTime;
+import java.util.Collection;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -50,10 +51,10 @@ public class LinkUpdaterScheduler {
             try {
                 linkService.setLastCheckDate(link.getId(), OffsetDateTime.now());
 
-                if (response.updatedAt().isAfter(link.getUpdatedAt())) {
-                    linkService.setLastUpdateDate(link.getId(), response.updatedAt());
+                if (response.getUpdateDate().isAfter(link.getUpdatedAt())) {
+                    linkService.setLastUpdateDate(link.getId(), response.getUpdateDate());
 
-                    var chats = chatService.getChatByLink(link.getId());
+                    Collection<Chat> chats = chatService.getChatByLink(link.getId());
                     botClient.sendUpdate(new LinkUpdateRequest(
                         link.getId(),
                         link.getUrl(),

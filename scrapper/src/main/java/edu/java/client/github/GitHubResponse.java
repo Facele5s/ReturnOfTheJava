@@ -15,5 +15,8 @@ public record GitHubResponse(
     @JsonProperty("pushed_at")
     OffsetDateTime pushedAt
 ) implements Response {
-
+    @Override
+    public OffsetDateTime getUpdateDate() {
+        return pushedAt();
+    }
 }
