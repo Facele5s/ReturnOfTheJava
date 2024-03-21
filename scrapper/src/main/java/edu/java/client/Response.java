@@ -1,7 +1,7 @@
-package edu.java.entity;
+package edu.java.client;
 
 import java.time.OffsetDateTime;
 
-public interface ClientResponse {
+public interface Response {
     OffsetDateTime updatedAt();
 }

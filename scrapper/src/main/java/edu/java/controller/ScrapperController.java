@@ -43,7 +43,7 @@ public class ScrapperController {
         throws BadRequestException, NotFoundException {
         LinkResponse link = new LinkResponse(chatId, request.link());
 
-        return service.addLink(chatId, link);
+        return service.addLink(link);
     }
 
     @ApiResponses(value = {
@@ -56,7 +56,7 @@ public class ScrapperController {
         throws BadRequestException, NotFoundException {
         LinkResponse link = new LinkResponse(chatId, request.link());
 
-        return service.deleteLink(chatId, link);
+        return service.deleteLink(link);
     }
 
     @ApiResponses(value = {

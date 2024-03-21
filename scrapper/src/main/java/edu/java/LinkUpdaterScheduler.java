@@ -1,14 +1,15 @@
 package edu.java;
 
 import edu.java.client.BotClient;
-import edu.java.client.UrlClient;
+import edu.java.client.Client;
+import edu.java.client.Response;
 import edu.java.configuration.ApplicationConfig;
+import edu.java.dto.entity.Chat;
 import edu.java.dto.exception.NotFoundException;
 import edu.java.dto.request.LinkUpdateRequest;
-import edu.java.entity.Chat;
-import edu.java.entity.ClientResponse;
 import edu.java.service.ChatService;
 import edu.java.service.LinkService;
+import java.time.OffsetDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,27 +24,34 @@ import org.springframework.stereotype.Component;
 public class LinkUpdaterScheduler {
     private final ApplicationConfig config;
     private final BotClient botClient;
+
     private final LinkService linkService;
     private final ChatService chatService;
-    private final List<UrlClient> clients;
+
+    private final List<Client> availableClients;
 
     @Scheduled(fixedDelayString = "${app.scheduler.interval}")
-    public void update() throws Exception {
+    public void update() {
         log.info("Checking for updates");
 
         linkService.getLongUncheckedLinks(config.scheduler().forceCheckDelay()).forEach(link -> {
-            List<UrlClient> client = clients.stream().filter(c -> c.supportsUrl(link.getUrl())).toList();
+            Client client = availableClients
+                .stream()
+                .filter(c -> c.isLinkSupported(link.getUrl()))
+                .findFirst().orElse(null);
 
-            if (client.isEmpty()) {
+            if (client == null) {
                 log.error("The link is not supported: " + link.getUrl());
                 return;
             }
 
-            ClientResponse clientResponse = client.getFirst().fetch(link.getUrl());
+            Response response = client.getResponse(link.getUrl());
 
             try {
-                if (clientResponse.updatedAt().isAfter(link.getUpdatedAt())) {
-                    linkService.setLastUpdateDate(link.getId(), clientResponse.updatedAt());
+                linkService.setLastCheckDate(link.getId(), OffsetDateTime.now());
+
+                if (response.updatedAt().isAfter(link.getUpdatedAt())) {
+                    linkService.setLastUpdateDate(link.getId(), response.updatedAt());
 
                     var chats = chatService.getChatByLink(link.getId());
                     botClient.sendUpdate(new LinkUpdateRequest(
@@ -56,7 +64,6 @@ public class LinkUpdaterScheduler {
             } catch (NotFoundException e) {
                 log.error(e.getDescription());
             }
-
         });
     }
 }

@@ -9,27 +9,31 @@ import com.pengrad.telegrambot.request.SetMyCommands;
 import edu.java.bot.command.Command;
 import java.util.List;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 @Service
 @AllArgsConstructor
+@Slf4j
 public class ObserverBot {
 
     private final TelegramBot telegramBot;
 
-    @Getter
     private List<Command> commandsList;
-
-    @Getter
-    private List<String> linksList;
 
     public void init() {
         addCommands();
 
         telegramBot.setUpdatesListener(updates -> {
             updates.stream().filter(update -> update.message() != null)
-                .forEach(update -> telegramBot.execute(parseCommand(update)));
+                .forEach(update -> {
+                    try {
+                        telegramBot.execute(parseCommand(update));
+                    } catch (Exception e) {
+                        log.error(e.toString());
+                    }
+
+                });
             return UpdatesListener.CONFIRMED_UPDATES_ALL;
         });
     }

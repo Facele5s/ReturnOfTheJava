@@ -1,6 +1,6 @@
 package edu.java.dao;
 
-import edu.java.entity.Chat;
+import edu.java.dto.entity.Chat;
 import java.time.OffsetDateTime;
 import java.util.Collection;
 import lombok.RequiredArgsConstructor;
@@ -12,20 +12,21 @@ import org.springframework.transaction.annotation.Transactional;
 @Component
 @RequiredArgsConstructor
 public class JdbcChatDao {
-    private static final String QUERY_ADD = "INSERT INTO chat (registration_date) VALUES (?) RETURNING *";
+    private static final String QUERY_ADD = "INSERT INTO chat (id, registration_date) VALUES (?, ?) RETURNING *";
     private static final String QUERY_REMOVE = "DELETE FROM chat WHERE id = ? RETURNING *";
     private static final String QUERY_FIND_ALL = "SELECT * FROM chat";
     private static final String QUERY_FIND_BY_ID = "SELECT * FROM chat WHERE id = ?";
-    private static final String QUERY_FIND_BY_CHAT =
+    private static final String QUERY_FIND_BY_LINK =
         "SELECT * FROM chat WHERE id IN (SELECT chat_id FROM chat_link WHERE link_id = ?)";
 
     private final JdbcTemplate jdbcTemplate;
 
     @Transactional
-    public Chat add(OffsetDateTime registrationDate) {
+    public Chat add(Long chatId, OffsetDateTime registrationDate) {
         return jdbcTemplate.queryForObject(
             QUERY_ADD,
             new BeanPropertyRowMapper<>(Chat.class),
+            chatId,
             registrationDate
         );
     }
@@ -55,6 +56,6 @@ public class JdbcChatDao {
 
     @Transactional
     public Collection<Chat> findByLink(Long linkId) {
-        return jdbcTemplate.query(QUERY_FIND_BY_CHAT, new BeanPropertyRowMapper<>(Chat.class), linkId);
+        return jdbcTemplate.query(QUERY_FIND_BY_LINK, new BeanPropertyRowMapper<>(Chat.class), linkId);
     }
 }

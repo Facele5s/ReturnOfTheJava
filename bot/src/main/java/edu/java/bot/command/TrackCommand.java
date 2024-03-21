@@ -2,15 +2,20 @@ package edu.java.bot.command;
 
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
+import edu.java.bot.client.ScrapperClient;
+import edu.java.dto.request.AddLinkRequest;
+import edu.java.dto.response.LinkResponse;
+import java.net.URI;
 import java.util.List;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class TrackCommand implements Command {
+    private final ScrapperClient scrapperClient;
 
-    private List<String> linksList;
+    private List<URI> linksList;
 
     @Override
     public String command() {
@@ -28,9 +33,14 @@ public class TrackCommand implements Command {
 
         String text;
         if (argumentsCorrect(update)) {
-            String link = update.message().text().trim().split(" ")[1];
+            URI link = URI.create(update.message().text().trim().split(" ")[1]);
 
-            text = addLink(link);
+            linksList = scrapperClient.getLinks(chatId).block()
+                .links().stream()
+                .map(LinkResponse::url)
+                .toList();
+
+            text = addLink(chatId, link);
         } else {
             text = "The link is incorrect!";
         }
@@ -44,12 +54,14 @@ public class TrackCommand implements Command {
         return arguments.matches("^/track \\S+$");
     }
 
-    private String addLink(String link) {
+    private String addLink(Long chatId, URI link) {
         if (linksList.contains(link)) {
             return "The link is already observed.";
         }
 
-        linksList.add(link);
+        AddLinkRequest request = new AddLinkRequest(link);
+        scrapperClient.addLink(chatId, request);
+
         return "The link is observed now:\n" + link;
     }
 }

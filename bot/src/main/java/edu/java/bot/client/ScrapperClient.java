@@ -11,12 +11,13 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
 @Component
 public class ScrapperClient {
     private final WebClient webClient;
 
-    private static final String ENDPOINT_TG_CHAT = "/tg-chat/{id}";
+    private static final String ENDPOINT_TG_CHAT = "/tg-chat/";
     private static final String ENDPOINT_LINKS = "/links";
 
     private static final String HEADER_TG_CHAT_ID = "Tg-Chat-id";
@@ -25,15 +26,15 @@ public class ScrapperClient {
         this.webClient = webClient;
     }
 
-    public void registerChat(Long chatId) {
-        webClient
+    public Mono<Void> registerChat(Long chatId) {
+        return webClient
             .post()
             .uri(ENDPOINT_TG_CHAT + chatId)
             .retrieve()
             .onStatus(
                 HttpStatus.BAD_REQUEST::equals,
                 clientResponse -> clientResponse.bodyToMono(ApiErrorResponse.class).map(ApiErrorResponseException::new)
-            ).bodyToMono(String.class).block();
+            ).bodyToMono(Void.class);
     }
 
     public void deleteChat(Long chatId) {
@@ -52,7 +53,7 @@ public class ScrapperClient {
             .bodyToMono(String.class).block();
     }
 
-    public ListLinkResponse getLinks(Long chatId) {
+    public Mono<ListLinkResponse> getLinks(Long chatId) {
         return webClient
             .get()
             .uri(ENDPOINT_LINKS)
@@ -66,7 +67,7 @@ public class ScrapperClient {
                 HttpStatus.NOT_FOUND::equals,
                 clientResponse -> clientResponse.bodyToMono(ApiErrorResponse.class).map(ApiErrorResponseException::new)
             )
-            .bodyToMono(ListLinkResponse.class).block();
+            .bodyToMono(ListLinkResponse.class);
     }
 
     public LinkResponse addLink(Long chatId, AddLinkRequest request) {

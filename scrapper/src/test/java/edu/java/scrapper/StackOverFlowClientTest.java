@@ -13,6 +13,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.testcontainers.shaded.org.apache.commons.io.FileUtils;
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
@@ -53,7 +54,7 @@ public class StackOverFlowClientTest {
         );
 
         //Act
-        StackOverFlowResponse response = stackOverFlowClient.getResponse(111);
+        StackOverFlowResponse response = stackOverFlowClient.getResponse(URI.create("stackoverflow.com/questions/111/"));
 
         //Assert
         assertEquals("2023-04-08T13:54:38Z", response.items().getFirst().lastActivityDate().toString());

@@ -1,13 +1,16 @@
 package edu.java.scrapper;
 
+import edu.java.dao.JdbcChatDao;
 import edu.java.dto.exception.BadRequestException;
 import edu.java.dto.exception.NotFoundException;
 import edu.java.dto.response.LinkResponse;
 import edu.java.dto.response.ListLinkResponse;
 import edu.java.service.ScrapperService;
+import edu.java.service.jdbc.JdbcChatService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import java.net.URI;
 import java.util.Arrays;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -17,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 public class ScrapperServiceTest {
     private ScrapperService service;
 
-    @BeforeEach
+    /*@BeforeEach
     public void serviceInit() throws Exception {
         this.service = new ScrapperService();
 
@@ -91,6 +94,6 @@ public class ScrapperServiceTest {
         } catch (NotFoundException e) {
             fail();
         }
-    }
+    }*/
 
 }

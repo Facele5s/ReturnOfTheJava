@@ -1,6 +1,6 @@
 package edu.java.dao;
 
-import edu.java.entity.Link;
+import edu.java.dto.entity.Link;
 import java.net.URI;
 import java.sql.Timestamp;
 import java.time.Duration;
@@ -33,7 +33,7 @@ public class JdbcLinkDao {
             QUERY_ADD,
             new BeanPropertyRowMapper<>(Link.class),
             chatId,
-            url
+            url.toString()
         );
     }
 
@@ -67,7 +67,7 @@ public class JdbcLinkDao {
 
     @Transactional
     public Collection<Link> findByUrl(URI url) {
-        return jdbcTemplate.query(QUERY_FIND_BY_URL, new BeanPropertyRowMapper<>(Link.class), url);
+        return jdbcTemplate.query(QUERY_FIND_BY_URL, new BeanPropertyRowMapper<>(Link.class), url.toString());
     }
 
     @Transactional

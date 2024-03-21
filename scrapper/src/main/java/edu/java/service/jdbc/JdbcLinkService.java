@@ -1,11 +1,11 @@
 package edu.java.service.jdbc;
 
 import edu.java.dao.JdbcLinkDao;
+import edu.java.dto.entity.Link;
 import edu.java.dto.exception.BadRequestException;
 import edu.java.dto.exception.NotFoundException;
 import edu.java.dto.response.LinkResponse;
 import edu.java.dto.response.ListLinkResponse;
-import edu.java.entity.Link;
 import edu.java.service.LinkService;
 import java.net.URI;
 import java.time.Duration;
@@ -46,7 +46,7 @@ public class JdbcLinkService implements LinkService {
     }
 
     @Override
-    public LinkResponse remove(Long linkId) throws NotFoundException {
+    public LinkResponse removeById(Long linkId) throws NotFoundException {
         try {
             Link link = linkDao.remove(linkId);
 
@@ -57,6 +57,17 @@ public class JdbcLinkService implements LinkService {
                 DESC_DEL_LINK_UNTRACKED
             );
         }
+    }
+
+    @Override
+    public LinkResponse removeByUrl(Long chatId, URI url) throws NotFoundException {
+        Long linkId = linkDao.findByUrl(url).stream()
+            .map(Link::getChatId)
+            .filter(i -> i.equals(chatId))
+            .findFirst()
+            .orElse(-1L);
+
+        return removeById(linkId);
     }
 
     @Override
