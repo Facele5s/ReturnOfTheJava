@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Component
 @RequiredArgsConstructor
+@SuppressWarnings("LineLength")
 public class JdbcLinkDao {
     private static final String QUERY_ADD = "INSERT INTO link (chat_id, url, updated_at, checked_at) VALUES (?, ?, ?, ?) RETURNING *";
     private static final String QUERY_ADD_COMBINATION = "INSERT INTO chat_link (chat_id, link_id) VALUES (?, ?)";

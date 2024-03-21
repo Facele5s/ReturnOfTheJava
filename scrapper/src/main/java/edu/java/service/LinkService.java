@@ -1,10 +1,10 @@
 package edu.java.service;
 
-import edu.java.entity.Link;
 import edu.java.dto.exception.BadRequestException;
 import edu.java.dto.exception.NotFoundException;
 import edu.java.dto.response.LinkResponse;
 import edu.java.dto.response.ListLinkResponse;
+import edu.java.entity.Link;
 import java.net.URI;
 import java.time.Duration;
 import java.time.OffsetDateTime;
