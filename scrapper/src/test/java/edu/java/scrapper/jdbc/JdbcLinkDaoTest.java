@@ -92,10 +92,12 @@ public class JdbcLinkDaoTest extends IntegrationTest {
         //Arrange
         chatDao.add(1L, null);
         linkDao.add(1L, URI.create("link1"));
+        Long linkId = linkDao.findByUrl(URI.create("link1"))
+            .stream().map(Link::getId).findFirst().orElse(0L);
 
         //Act + Assert
         assertDoesNotThrow(() -> {
-            linkDao.findById(1L);
+            linkDao.findById(linkId);
         });
     }
 
