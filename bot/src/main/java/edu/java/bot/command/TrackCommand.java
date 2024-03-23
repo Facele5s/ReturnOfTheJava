@@ -35,7 +35,7 @@ public class TrackCommand implements Command {
         if (argumentsCorrect(update)) {
             URI link = URI.create(update.message().text().trim().split(" ")[1]);
 
-            linksList = scrapperClient.getLinks(chatId).block()
+            linksList = scrapperClient.getLinks(chatId)
                 .links().stream()
                 .map(LinkResponse::url)
                 .toList();

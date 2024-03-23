@@ -11,7 +11,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
 
 @Component
 public class ScrapperClient {
@@ -53,7 +52,7 @@ public class ScrapperClient {
             .bodyToMono(String.class).block();
     }
 
-    public Mono<ListLinkResponse> getLinks(Long chatId) {
+    public ListLinkResponse getLinks(Long chatId) {
         return webClient
             .get()
             .uri(ENDPOINT_LINKS)
@@ -67,7 +66,7 @@ public class ScrapperClient {
                 HttpStatus.NOT_FOUND::equals,
                 clientResponse -> clientResponse.bodyToMono(ApiErrorResponse.class).map(ApiErrorResponseException::new)
             )
-            .bodyToMono(ListLinkResponse.class);
+            .bodyToMono(ListLinkResponse.class).block();
     }
 
     public LinkResponse addLink(Long chatId, AddLinkRequest request) {

@@ -6,11 +6,11 @@ import edu.java.bot.client.ScrapperClient;
 import edu.java.dto.response.LinkResponse;
 import java.net.URI;
 import java.util.List;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class ListCommand implements Command {
     private final ScrapperClient scrapperClient;
 
@@ -30,7 +30,7 @@ public class ListCommand implements Command {
     public SendMessage respond(Update update) {
         long chatId = update.message().chat().id();
 
-        linksList = scrapperClient.getLinks(chatId).block()
+        linksList = scrapperClient.getLinks(chatId)
             .links().stream()
             .map(LinkResponse::url)
             .toList();
