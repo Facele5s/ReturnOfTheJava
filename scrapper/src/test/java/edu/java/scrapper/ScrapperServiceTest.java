@@ -1,104 +1,130 @@
 package edu.java.scrapper;
 
-import edu.java.dao.JdbcChatDao;
 import edu.java.dto.exception.BadRequestException;
 import edu.java.dto.exception.NotFoundException;
+import edu.java.dto.response.ChatResponse;
 import edu.java.dto.response.LinkResponse;
+import edu.java.dto.response.ListChatResponse;
 import edu.java.dto.response.ListLinkResponse;
+import edu.java.service.ChatService;
+import edu.java.service.LinkService;
 import edu.java.service.ScrapperService;
-import edu.java.service.jdbc.JdbcChatService;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 import java.net.URI;
-import java.util.Arrays;
+import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.when;
 
-@Disabled
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class ScrapperServiceTest {
-    @Mock
+    private static final Long CHAT_ID = 100500L;
+
     private ScrapperService service;
 
+    @Mock
+    private ChatService chatService;
 
+    @Mock
+    private LinkService linkService;
 
     @BeforeEach
-    public void serviceInit() throws Exception {
-
-        service.registerChat(1L);
-        service.registerChat(2L);
-
-        service.addLink(new LinkResponse(1L, new URI("link1")));
-        service.addLink(new LinkResponse(2L, new URI("link2")));
-        service.addLink(new LinkResponse(3L, new URI("link3")));
+    public void setup() {
+        service = Mockito.spy(new ScrapperService(chatService, linkService));
     }
 
     @Test
     @DisplayName("Check for chat re-registration")
     public void registerChatTwiceTest() {
-        try {
-            service.registerChat(2L);
-        } catch (BadRequestException e) {
-            assertTrue(true);
-        }
+        //Arrange
+        List<ChatResponse> chatResponseList = List.of(new ChatResponse(CHAT_ID, null));
+        ListChatResponse listChatResponse = new ListChatResponse(chatResponseList, 1);
+        when(chatService.getAllChats()).thenReturn(listChatResponse);
+
+        //Act + Assert
+        assertThrows(BadRequestException.class, () -> {
+            service.registerChat(CHAT_ID);
+        });
     }
 
     @Test
-    @DisplayName("Check the chat for existence before deleting ")
+    @DisplayName("Check the chat for existence before deleting")
     public void deleteUnexistedChatTest() {
-        try {
-            service.deleteChat(3L);
-        } catch (NotFoundException e) {
-            assertTrue(true);
-        }
+        //Arrange
+        List<ChatResponse> chatResponseList = List.of();
+        ListChatResponse listChatResponse = new ListChatResponse(chatResponseList, 1);
+        when(chatService.getAllChats()).thenReturn(listChatResponse);
+
+        //Act + Assert
+        assertThrows(NotFoundException.class, () -> {
+            service.deleteChat(CHAT_ID);
+        });
     }
 
     @Test
     @DisplayName("Check for link re-adding")
-    public void addLinkTwiceTest() throws Exception {
-        try {
-            service.addLink(new LinkResponse(1L, new URI("link1")));
-        } catch (BadRequestException e) {
-            assertTrue(true);
-        }
+    public void addLinkTwiceTest() {
+        //Arrange
+        URI url = URI.create("link");
+        LinkResponse linkResponse = new LinkResponse(CHAT_ID, url);
+        List<ChatResponse> chatResponseList = List.of(new ChatResponse(CHAT_ID, null));
+        ListChatResponse listChatResponse = new ListChatResponse(chatResponseList, 1);
+        List<LinkResponse> linkResponseList = List.of(linkResponse);
+        ListLinkResponse listLinkResponse = new ListLinkResponse(linkResponseList, 1);
+        when(chatService.getAllChats()).thenReturn(listChatResponse);
+        when(linkService.getLinksByChat(CHAT_ID)).thenReturn(listLinkResponse);
+
+        //Act + Assert
+        assertThrows(BadRequestException.class, () -> {
+            service.addLink(linkResponse);
+        });
     }
 
     @Test
     @DisplayName("Check the link for existence before deleting")
-    public void deleteUnexistedLinkTest() throws Exception {
-        try {
-            service.deleteLink(new LinkResponse(1L, new URI("link100500")));
-        } catch (NotFoundException e) {
-            assertTrue(true);
-        }
+    public void deleteUnexistedLinkTest() {
+        //Arrange
+        URI url = URI.create("link");
+        LinkResponse linkResponse = new LinkResponse(CHAT_ID, url);
+        List<ChatResponse> chatResponseList = List.of(new ChatResponse(CHAT_ID, null));
+        ListChatResponse listChatResponse = new ListChatResponse(chatResponseList, 1);
+        List<LinkResponse> linkResponseList = List.of();
+        ListLinkResponse listLinkResponse = new ListLinkResponse(linkResponseList, 0);
+        when(chatService.getAllChats()).thenReturn(listChatResponse);
+        when(linkService.getLinksByChat(CHAT_ID)).thenReturn(listLinkResponse);
+
+        //Act + Assert
+        assertThrows(BadRequestException.class, () -> {
+            service.deleteLink(linkResponse);
+        });
     }
 
     @Test
     @DisplayName("Getting links check")
     public void getLinksTest() throws Exception {
-        ListLinkResponse expectedLinksList = new ListLinkResponse(Arrays.asList(
-            new LinkResponse(1L, new URI("link1")),
-            new LinkResponse(2L, new URI("link2")),
-            new LinkResponse(3L, new URI("link3"))
-        ), 0);
+        //Arrange
+        URI url = URI.create("link");
+        LinkResponse linkResponse = new LinkResponse(CHAT_ID, url);
+        List<ChatResponse> chatResponseList = List.of(new ChatResponse(CHAT_ID, null));
+        ListChatResponse listChatResponse = new ListChatResponse(chatResponseList, 1);
+        List<LinkResponse> linkResponseList = List.of(linkResponse);
+        ListLinkResponse listLinkResponse = new ListLinkResponse(linkResponseList, 1);
+        when(chatService.getAllChats()).thenReturn(listChatResponse);
+        when(linkService.getLinksByChat(CHAT_ID)).thenReturn(listLinkResponse);
 
-        try {
-            service.getLinks(10L);
-        } catch (NotFoundException e) {
-            assertTrue(true);
-        }
+        //Act
+        ListLinkResponse response = service.getLinks(CHAT_ID);
 
-        try {
-            ListLinkResponse actualList = service.getLinks(1L);
-
-            assertEquals(expectedLinksList, actualList);
-        } catch (NotFoundException e) {
-            fail();
-        }
+        //Assert
+        assertEquals(listLinkResponse, response);
     }
-
 }
