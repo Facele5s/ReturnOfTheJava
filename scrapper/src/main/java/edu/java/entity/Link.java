@@ -1,4 +1,4 @@
-package edu.java.entity;
+package edu.java.entity.jdbc;
 
 import java.net.URI;
 import java.time.OffsetDateTime;
