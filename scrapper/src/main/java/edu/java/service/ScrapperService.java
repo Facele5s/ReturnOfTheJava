@@ -91,8 +91,8 @@ public class ScrapperService {
 
         ListLinkResponse linkResponseList = linksByChats.get(chatId);
 
-        if (linkResponseList.links().contains(link)) {
-            throw new BadRequestException(
+        if (!linkResponseList.links().contains(link)) {
+            throw new NotFoundException(
                 MSG_LINK_NOT_TRACKED,
                 DESC_DEL_LINK_UNTRACKED
             );
