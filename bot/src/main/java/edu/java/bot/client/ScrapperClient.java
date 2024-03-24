@@ -15,7 +15,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 @Component
 public class ScrapperClient {
     private final WebClient webClient;
- 
+
     private static final String ENDPOINT_TG_CHAT = "/tg-chat/{id}";
     private static final String ENDPOINT_LINKS = "/links";
 
