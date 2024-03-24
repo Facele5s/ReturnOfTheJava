@@ -10,6 +10,8 @@ import edu.java.service.ScrapperService;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
+@SuppressWarnings("LineLength")
 public class ScrapperController {
     private final ScrapperService service;
 
@@ -29,8 +32,11 @@ public class ScrapperController {
         @ApiResponse(responseCode = "404", description = "The chat is not registered yet")
     })
     @GetMapping("/links")
-    public ListLinkResponse getLinks(@RequestHeader("Tg-Chat-id") Long chatId) throws NotFoundException {
-        return service.getLinks(chatId);
+    public ResponseEntity<ListLinkResponse> getLinks(@RequestHeader("Tg-Chat-id") Long chatId) throws NotFoundException {
+        return new ResponseEntity<>(
+            service.getLinks(chatId),
+            HttpStatus.OK
+        );
     }
 
     @ApiResponses(value = {
@@ -39,11 +45,16 @@ public class ScrapperController {
         @ApiResponse(responseCode = "404", description = "The chat is not registered yet")
     })
     @PostMapping("/links")
-    public LinkResponse addLink(@RequestHeader("Tg-Chat-id") Long chatId, @RequestBody AddLinkRequest request)
-        throws BadRequestException, NotFoundException {
+    public ResponseEntity<LinkResponse> addLink(
+        @RequestHeader("Tg-Chat-id") Long chatId,
+        @RequestBody AddLinkRequest request
+    ) throws BadRequestException, NotFoundException {
         LinkResponse link = new LinkResponse(chatId, request.link());
 
-        return service.addLink(link);
+        return new ResponseEntity<>(
+            service.addLink(link),
+            HttpStatus.OK
+        );
     }
 
     @ApiResponses(value = {
@@ -52,11 +63,14 @@ public class ScrapperController {
         @ApiResponse(responseCode = "404", description = "The chat is not registered yet")
     })
     @DeleteMapping("/links")
-    public LinkResponse deleteLink(@RequestHeader("Tg-Chat-id") Long chatId, @RequestBody RemoveLinkRequest request)
+    public ResponseEntity<LinkResponse> deleteLink(@RequestHeader("Tg-Chat-id") Long chatId, @RequestBody RemoveLinkRequest request)
         throws BadRequestException, NotFoundException {
         LinkResponse link = new LinkResponse(chatId, request.link());
 
-        return service.deleteLink(link);
+        return new ResponseEntity<>(
+            service.deleteLink(link),
+            HttpStatus.OK
+        );
     }
 
     @ApiResponses(value = {
@@ -64,8 +78,10 @@ public class ScrapperController {
         @ApiResponse(responseCode = "400", description = "Invalid request parameters")
     })
     @PostMapping("/tg-chat/{id}")
-    public void registerChat(@PathVariable("id") Long chatId) throws BadRequestException {
+    public ResponseEntity<Void> registerChat(@PathVariable("id") Long chatId) throws BadRequestException {
         service.registerChat(chatId);
+
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @ApiResponses(value = {
@@ -74,7 +90,9 @@ public class ScrapperController {
         @ApiResponse(responseCode = "404", description = "The chat is not registered yet")
     })
     @DeleteMapping("/tg-chat/{id}")
-    public void deleteChat(@PathVariable("id") Long chatId) throws NotFoundException {
+    public ResponseEntity<Void> deleteChat(@PathVariable("id") Long chatId) throws NotFoundException {
         service.deleteChat(chatId);
+
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

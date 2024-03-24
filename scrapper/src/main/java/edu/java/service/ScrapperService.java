@@ -5,8 +5,6 @@ import edu.java.dto.exception.NotFoundException;
 import edu.java.dto.response.ChatResponse;
 import edu.java.dto.response.LinkResponse;
 import edu.java.dto.response.ListLinkResponse;
-import edu.java.service.jdbc.JdbcChatService;
-import edu.java.service.jdbc.JdbcLinkService;
 import java.net.URI;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -15,8 +13,8 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class ScrapperService {
-    private final JdbcChatService chatService;
-    private final JdbcLinkService linkService;
+    private final ChatService chatService;
+    private final LinkService linkService;
 
     private static final String MSG_CHAT_NOT_REGISTERED = "The chat is not registered yet";
     private static final String MSG_CHAT_ALREADY_REGISTERED = "The chat is already registered";
