@@ -163,7 +163,7 @@ public class CommandsTest {
     private String getReply(ObserverBot bot, String command) {
         String updStr = "{\"message\":{\"chat\":{\"id\":0},\"text\":\"" + command + "\"}}";
         Update update = BotUtils.parseUpdate(updStr);
-        SendMessage response = bot.processMessage(update);
+        SendMessage response = bot.parseCommand(update);
 
         return response.getParameters().get("text").toString();
     }

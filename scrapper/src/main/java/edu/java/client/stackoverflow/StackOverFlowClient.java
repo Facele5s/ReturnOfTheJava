@@ -8,7 +8,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 public class StackOverFlowClient {
     private final WebClient webClient;
 
-    public StackOverFlowClient(@Qualifier("stackoverflowClient") WebClient webClient) {
+    public StackOverFlowClient(@Qualifier("stackoverflowWebClient") WebClient webClient) {
         this.webClient = webClient;
     }
 

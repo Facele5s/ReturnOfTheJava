@@ -17,7 +17,11 @@ public class ClientConfiguration {
     @Value("${client.base-url.stackoverflow:https://api.stackexchange.com/2.3}")
     String stackOverFlowBaseUrl;
 
-    @Bean("githubClient")
+    @NotNull
+    @Value("${client.base-url.bot:https://localhost}")
+    String botBaseUrl;
+
+    @Bean("githubWebClient")
     public WebClient getGitHubClient() {
         return WebClient
             .builder()
@@ -25,11 +29,19 @@ public class ClientConfiguration {
             .build();
     }
 
-    @Bean("stackoverflowClient")
+    @Bean("stackoverflowWebClient")
     public WebClient getStackOverFlowClient() {
         return WebClient
             .builder()
             .baseUrl(stackOverFlowBaseUrl)
+            .build();
+    }
+
+    @Bean("botWebClient")
+    public WebClient getBotClient() {
+        return WebClient
+            .builder()
+            .baseUrl(botBaseUrl)
             .build();
     }
 }

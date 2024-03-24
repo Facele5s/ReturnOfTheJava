@@ -29,7 +29,7 @@ public class ObserverBot {
 
         telegramBot.setUpdatesListener(updates -> {
             updates.stream().filter(update -> update.message() != null)
-                .forEach(update -> telegramBot.execute(processMessage(update)));
+                .forEach(update -> telegramBot.execute(parseCommand(update)));
             return UpdatesListener.CONFIRMED_UPDATES_ALL;
         });
     }
@@ -42,7 +42,7 @@ public class ObserverBot {
         telegramBot.execute(new SetMyCommands(commands));
     }
 
-    public SendMessage processMessage(Update update) {
+    public SendMessage parseCommand(Update update) {
         long chatId = update.message().chat().id();
 
         for (Command command: commandsList) {
@@ -52,5 +52,9 @@ public class ObserverBot {
         }
 
         return new SendMessage(chatId, "The command is incorrect!");
+    }
+
+    public void sendMessageToChat(SendMessage message) {
+        telegramBot.execute(message);
     }
 }

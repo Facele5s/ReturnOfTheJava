@@ -19,6 +19,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+
 public class StackOverFlowClientTest {
     private static final File FILE = new File("src/test/resources/StackOverFlowResponseExample.json");
 
