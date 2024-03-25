@@ -1,7 +1,5 @@
 package edu.java.service.jpa;
 
-import edu.java.dto.exception.BadRequestException;
-import edu.java.dto.exception.NotFoundException;
 import edu.java.dto.response.LinkResponse;
 import edu.java.dto.response.ListLinkResponse;
 import edu.java.entity.Link;
@@ -20,10 +18,12 @@ public class JpaLinkService implements LinkService {
     private final JpaLinkRepository linkRepository;
 
     @Override
-    public LinkResponse add(Long chatId, URI url) throws BadRequestException {
+    public LinkResponse add(Long chatId, URI url) {
         LinkEntity entity = new LinkEntity();
         entity.setChatId(chatId);
         entity.setUrl(url);
+        entity.setUpdatedAt(OffsetDateTime.now());
+        entity.setCheckedAt(OffsetDateTime.now());
 
         linkRepository.save(entity);
 
@@ -32,7 +32,7 @@ public class JpaLinkService implements LinkService {
     }
 
     @Override
-    public LinkResponse removeById(Long linkId) throws NotFoundException {
+    public LinkResponse removeById(Long linkId) {
         LinkEntity entity = linkRepository.findById(linkId).get();
 
         linkRepository.delete(entity);
@@ -41,7 +41,7 @@ public class JpaLinkService implements LinkService {
     }
 
     @Override
-    public LinkResponse removeByUrl(Long chatId, URI url) throws NotFoundException {
+    public LinkResponse removeByUrl(Long chatId, URI url) {
         LinkEntity entity = linkRepository.findByUrl(chatId, url);
 
         linkRepository.delete(entity);
@@ -59,7 +59,7 @@ public class JpaLinkService implements LinkService {
     }
 
     @Override
-    public LinkResponse getLinkById(Long linkId) throws NotFoundException {
+    public LinkResponse getLinkById(Long linkId) {
         LinkEntity entity = linkRepository.findById(linkId).get();
 
         return new LinkResponse(entity.getChatId(), entity.getUrl());
@@ -91,7 +91,7 @@ public class JpaLinkService implements LinkService {
     }
 
     @Override
-    public LinkResponse setLastUpdateDate(Long linkId, OffsetDateTime updateDate) throws NotFoundException {
+    public LinkResponse setLastUpdateDate(Long linkId, OffsetDateTime updateDate) {
         LinkEntity entity = linkRepository.findById(linkId).get();
 
         entity.setUpdatedAt(updateDate);
@@ -101,7 +101,7 @@ public class JpaLinkService implements LinkService {
     }
 
     @Override
-    public LinkResponse setLastCheckDate(Long linkId, OffsetDateTime checkDate) throws NotFoundException {
+    public LinkResponse setLastCheckDate(Long linkId, OffsetDateTime checkDate) {
         LinkEntity entity = linkRepository.findById(linkId).get();
 
         entity.setCheckedAt(checkDate);
