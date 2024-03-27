@@ -2,15 +2,19 @@ package edu.java.bot.command;
 
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
+import edu.java.bot.client.ScrapperClient;
+import edu.java.dto.response.LinkResponse;
+import java.net.URI;
 import java.util.List;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class ListCommand implements Command {
+    private final ScrapperClient scrapperClient;
 
-    private List<String> linksList;
+    private List<URI> linksList;
 
     @Override
     public String command() {
@@ -25,6 +29,11 @@ public class ListCommand implements Command {
     @Override
     public SendMessage respond(Update update) {
         long chatId = update.message().chat().id();
+
+        linksList = scrapperClient.getLinks(chatId)
+            .links().stream()
+            .map(LinkResponse::url)
+            .toList();
 
         return new SendMessage(chatId, generateLinksText());
     }

@@ -2,15 +2,20 @@ package edu.java.bot.command;
 
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
+import edu.java.bot.client.ScrapperClient;
+import edu.java.dto.request.RemoveLinkRequest;
+import edu.java.dto.response.LinkResponse;
+import java.net.URI;
 import java.util.List;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class UntrackCommand implements Command {
+    private final ScrapperClient scrapperClient;
 
-    private List<String> linksList;
+    private List<URI> linksList;
 
     @Override
     public String command() {
@@ -28,9 +33,14 @@ public class UntrackCommand implements Command {
 
         String text;
         if (argumentsCorrect(update)) {
-            String link = update.message().text().trim().split(" ")[1];
+            URI link = URI.create(update.message().text().trim().split(" ")[1]);
 
-            text = removeLink(link);
+            linksList = scrapperClient.getLinks(chatId)
+                .links().stream()
+                .map(LinkResponse::url)
+                .toList();
+
+            text = removeLink(chatId, link);
         } else {
             text = "The link is incorrect!";
         }
@@ -44,12 +54,14 @@ public class UntrackCommand implements Command {
         return arguments.matches("^/untrack \\S+$");
     }
 
-    private String removeLink(String link) {
+    private String removeLink(Long chatId, URI link) {
         if (!linksList.contains(link)) {
             return "There is no such observed link.";
         }
 
-        linksList.remove(link);
+        RemoveLinkRequest request = new RemoveLinkRequest(link);
+        scrapperClient.deleteLink(chatId, request);
+
         return "The link is not observed now:\n" + link;
     }
 }

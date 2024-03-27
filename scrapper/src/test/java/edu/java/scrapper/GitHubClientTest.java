@@ -13,6 +13,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.testcontainers.shaded.org.apache.commons.io.FileUtils;
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
@@ -53,7 +54,7 @@ public class GitHubClientTest {
         );
 
         //Act
-        GitHubResponse response = gitHubClient.getResponse("testUser", "testRepo");
+        GitHubResponse response = gitHubClient.getResponse(URI.create("github.com/testUser/testRepo"));
 
         //Assert
         assertEquals(674765843, response.id());

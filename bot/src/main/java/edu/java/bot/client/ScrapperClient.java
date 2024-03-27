@@ -16,7 +16,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 public class ScrapperClient {
     private final WebClient webClient;
 
-    private static final String ENDPOINT_TG_CHAT = "/tg-chat/{id}";
+    private static final String ENDPOINT_TG_CHAT = "/tg-chat/";
     private static final String ENDPOINT_LINKS = "/links";
 
     private static final String HEADER_TG_CHAT_ID = "Tg-Chat-id";
@@ -33,7 +33,7 @@ public class ScrapperClient {
             .onStatus(
                 HttpStatus.BAD_REQUEST::equals,
                 clientResponse -> clientResponse.bodyToMono(ApiErrorResponse.class).map(ApiErrorResponseException::new)
-            ).bodyToMono(String.class).block();
+            ).bodyToMono(Void.class).block();
     }
 
     public void deleteChat(Long chatId) {
