@@ -5,6 +5,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.net.URI;
 import java.time.OffsetDateTime;
@@ -20,9 +22,6 @@ public class LinkEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "chat_id")
-    private Long chatId;
-
     @Column(name = "url")
     private URI url;
 
@@ -31,4 +30,8 @@ public class LinkEntity {
 
     @Column(name = "checked_at")
     private OffsetDateTime checkedAt;
+
+    @ManyToOne
+    @JoinColumn(name = "chat_id", unique = true, nullable = false)
+    private ChatEntity chat;
 }
