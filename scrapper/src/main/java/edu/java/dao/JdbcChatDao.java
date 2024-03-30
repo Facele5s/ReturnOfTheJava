@@ -1,6 +1,6 @@
 package edu.java.dao;
 
-import edu.java.entity.Chat;
+import edu.java.entity.jdbc.Chat;
 import java.time.OffsetDateTime;
 import java.util.Collection;
 import lombok.RequiredArgsConstructor;

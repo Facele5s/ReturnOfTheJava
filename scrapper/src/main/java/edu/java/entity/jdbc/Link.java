@@ -1,4 +1,4 @@
-package edu.java.entity;
+package edu.java.entity.jdbc;
 
 import java.net.URI;
 import java.time.OffsetDateTime;
@@ -11,7 +11,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Link {
     private Long id;
-    private Long chatId;
     private URI url;
     private OffsetDateTime updatedAt;
     private OffsetDateTime checkedAt;

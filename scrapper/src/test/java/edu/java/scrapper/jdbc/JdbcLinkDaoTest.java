@@ -2,7 +2,8 @@ package edu.java.scrapper.jdbc;
 
 import edu.java.dao.JdbcChatDao;
 import edu.java.dao.JdbcLinkDao;
-import edu.java.entity.Link;
+import edu.java.entity.jdbc.Chat;
+import edu.java.entity.jdbc.Link;
 import edu.java.scrapper.IntegrationTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -53,8 +54,7 @@ public class JdbcLinkDaoTest extends IntegrationTest {
         //Arrange
         chatDao.add(1L, null);
         linkDao.add(1L, URI.create("link1"));
-        Long linkId = linkDao.findByUrl(URI.create("link1"))
-            .stream().map(Link::getId).findFirst().orElse(0L);
+        Long linkId = linkDao.findByUrl(URI.create("link1")).getId();
 
         //Act
         linkDao.remove(linkId);
@@ -92,8 +92,7 @@ public class JdbcLinkDaoTest extends IntegrationTest {
         //Arrange
         chatDao.add(1L, null);
         linkDao.add(1L, URI.create("link1"));
-        Long linkId = linkDao.findByUrl(URI.create("link1"))
-            .stream().map(Link::getId).findFirst().orElse(0L);
+        Long linkId = linkDao.findByUrl(URI.create("link1")).getId();
 
         //Act + Assert
         assertDoesNotThrow(() -> {
@@ -130,16 +129,16 @@ public class JdbcLinkDaoTest extends IntegrationTest {
         chatDao.add(1L, null);
         chatDao.add(2L, null);
         chatDao.add(3L, null);
-        linkDao.add(1L, URI.create("link1"));
+        Long linkId = linkDao.add(1L, URI.create("link1")).getId();
         linkDao.add(1L, URI.create("link2"));
         linkDao.add(2L, URI.create("link1"));
 
         //Act
-        List<Long> chatsWithUrl = linkDao.findByUrl(URI.create("link1"))
+        List<Long> chatsWithUrl = chatDao.findByLink(linkId)
             .stream()
-            .map(Link::getChatId)
+            .map(Chat::getId)
             .toList();
-
+        
         //Assert
         assertEquals(2, chatsWithUrl.size());
         assertTrue(chatsWithUrl.contains(1L));

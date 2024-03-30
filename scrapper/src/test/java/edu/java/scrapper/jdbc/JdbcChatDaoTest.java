@@ -2,8 +2,8 @@ package edu.java.scrapper.jdbc;
 
 import edu.java.dao.JdbcChatDao;
 import edu.java.dao.JdbcLinkDao;
-import edu.java.entity.Chat;
-import edu.java.entity.Link;
+import edu.java.entity.jdbc.Chat;
+import edu.java.entity.jdbc.Link;
 import edu.java.scrapper.IntegrationTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -96,11 +96,10 @@ public class JdbcChatDaoTest extends IntegrationTest {
         //Arrange
         chatDao.add(1L, null);
         linkDao.add(1L, URI.create("link1"));
-        Collection<Link> links = linkDao.findByUrl(URI.create("link1"));
-        Long linkId = links.stream().map(Link::getId).findFirst().orElse(0L);
+        Link link = linkDao.findByUrl(URI.create("link1"));
 
         //Act
-        Collection<Chat> chats = chatDao.findByLink(linkId);
+        Collection<Chat> chats = chatDao.findByLink(link.getId());
 
         //Assert
         assertEquals(1, chats.size());

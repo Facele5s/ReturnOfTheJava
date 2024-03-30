@@ -5,7 +5,7 @@ import edu.java.dto.exception.BadRequestException;
 import edu.java.dto.exception.NotFoundException;
 import edu.java.dto.response.ChatResponse;
 import edu.java.dto.response.ListChatResponse;
-import edu.java.entity.Chat;
+import edu.java.entity.jdbc.Chat;
 import edu.java.service.ChatService;
 import java.time.OffsetDateTime;
 import java.util.Collection;
@@ -78,7 +78,7 @@ public class JdbcChatService implements ChatService {
     }
 
     @Override
-    public Collection<Chat> getChatByLink(Long linkId) {
+    public Collection<Chat> getChatsByLink(Long linkId) {
         return chatDao.findByLink(linkId);
     }
 }

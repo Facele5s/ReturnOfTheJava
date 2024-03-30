@@ -2,9 +2,7 @@ package edu.java.scrapper;
 
 import edu.java.dto.exception.BadRequestException;
 import edu.java.dto.exception.NotFoundException;
-import edu.java.dto.response.ChatResponse;
 import edu.java.dto.response.LinkResponse;
-import edu.java.dto.response.ListChatResponse;
 import edu.java.dto.response.ListLinkResponse;
 import edu.java.service.ChatService;
 import edu.java.service.LinkService;
@@ -20,6 +18,7 @@ import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 import java.net.URI;
 import java.util.List;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
@@ -28,6 +27,8 @@ import static org.mockito.Mockito.when;
 @MockitoSettings(strictness = Strictness.LENIENT)
 public class ScrapperServiceTest {
     private static final Long CHAT_ID = 100500L;
+    private static final BadRequestException BAD_REQUEST = new BadRequestException(null, null);
+    private static final NotFoundException NOT_FOUND = new NotFoundException(null, null);
 
     private ScrapperService service;
 
@@ -44,25 +45,25 @@ public class ScrapperServiceTest {
 
     @Test
     @DisplayName("Check for chat re-registration")
-    public void registerChatTwiceTest() {
+    public void registerChatTwiceTest() throws Exception {
         //Arrange
-        List<ChatResponse> chatResponseList = List.of(new ChatResponse(CHAT_ID, null));
-        ListChatResponse listChatResponse = new ListChatResponse(chatResponseList, 1);
-        when(chatService.getAllChats()).thenReturn(listChatResponse);
+        when(chatService.registerChat(CHAT_ID)).thenThrow(BAD_REQUEST);
 
         //Act + Assert
         assertThrows(BadRequestException.class, () -> {
             service.registerChat(CHAT_ID);
         });
+
+        assertDoesNotThrow(() -> {
+            service.registerChat(1L);
+        });
     }
 
     @Test
     @DisplayName("Check the chat for existence before deleting")
-    public void deleteUnexistedChatTest() {
+    public void deleteUnexistedChatTest() throws Exception {
         //Arrange
-        List<ChatResponse> chatResponseList = List.of();
-        ListChatResponse listChatResponse = new ListChatResponse(chatResponseList, 1);
-        when(chatService.getAllChats()).thenReturn(listChatResponse);
+        when(chatService.deleteChat(CHAT_ID)).thenThrow(NOT_FOUND);
 
         //Act + Assert
         assertThrows(NotFoundException.class, () -> {
@@ -72,16 +73,11 @@ public class ScrapperServiceTest {
 
     @Test
     @DisplayName("Check for link re-adding")
-    public void addLinkTwiceTest() {
+    public void addLinkTwiceTest() throws Exception {
         //Arrange
         URI url = URI.create("link");
         LinkResponse linkResponse = new LinkResponse(CHAT_ID, url);
-        List<ChatResponse> chatResponseList = List.of(new ChatResponse(CHAT_ID, null));
-        ListChatResponse listChatResponse = new ListChatResponse(chatResponseList, 1);
-        List<LinkResponse> linkResponseList = List.of(linkResponse);
-        ListLinkResponse listLinkResponse = new ListLinkResponse(linkResponseList, 1);
-        when(chatService.getAllChats()).thenReturn(listChatResponse);
-        when(linkService.getLinksByChat(CHAT_ID)).thenReturn(listLinkResponse);
+        when(linkService.add(CHAT_ID, url)).thenThrow(BAD_REQUEST);
 
         //Act + Assert
         assertThrows(BadRequestException.class, () -> {
@@ -91,19 +87,14 @@ public class ScrapperServiceTest {
 
     @Test
     @DisplayName("Check the link for existence before deleting")
-    public void deleteUnexistedLinkTest() {
+    public void deleteUnexistedLinkTest() throws Exception {
         //Arrange
         URI url = URI.create("link");
         LinkResponse linkResponse = new LinkResponse(CHAT_ID, url);
-        List<ChatResponse> chatResponseList = List.of(new ChatResponse(CHAT_ID, null));
-        ListChatResponse listChatResponse = new ListChatResponse(chatResponseList, 1);
-        List<LinkResponse> linkResponseList = List.of();
-        ListLinkResponse listLinkResponse = new ListLinkResponse(linkResponseList, 0);
-        when(chatService.getAllChats()).thenReturn(listChatResponse);
-        when(linkService.getLinksByChat(CHAT_ID)).thenReturn(listLinkResponse);
+        when(linkService.untrack(CHAT_ID, url)).thenThrow(NOT_FOUND);
 
         //Act + Assert
-        assertThrows(BadRequestException.class, () -> {
+        assertThrows(NotFoundException.class, () -> {
             service.deleteLink(linkResponse);
         });
     }
@@ -114,11 +105,8 @@ public class ScrapperServiceTest {
         //Arrange
         URI url = URI.create("link");
         LinkResponse linkResponse = new LinkResponse(CHAT_ID, url);
-        List<ChatResponse> chatResponseList = List.of(new ChatResponse(CHAT_ID, null));
-        ListChatResponse listChatResponse = new ListChatResponse(chatResponseList, 1);
         List<LinkResponse> linkResponseList = List.of(linkResponse);
         ListLinkResponse listLinkResponse = new ListLinkResponse(linkResponseList, 1);
-        when(chatService.getAllChats()).thenReturn(listChatResponse);
         when(linkService.getLinksByChat(CHAT_ID)).thenReturn(listLinkResponse);
 
         //Act

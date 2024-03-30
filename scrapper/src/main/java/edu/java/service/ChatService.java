@@ -4,7 +4,7 @@ import edu.java.dto.exception.BadRequestException;
 import edu.java.dto.exception.NotFoundException;
 import edu.java.dto.response.ChatResponse;
 import edu.java.dto.response.ListChatResponse;
-import edu.java.entity.Chat;
+import edu.java.entity.jdbc.Chat;
 import java.util.Collection;
 
 public interface ChatService {
@@ -16,5 +16,5 @@ public interface ChatService {
 
     ChatResponse getChatById(Long chatId) throws NotFoundException;
 
-    Collection<Chat> getChatByLink(Long linkId);
+    Collection<Chat> getChatsByLink(Long linkId);
 }

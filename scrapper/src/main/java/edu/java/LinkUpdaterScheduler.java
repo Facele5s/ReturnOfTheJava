@@ -6,7 +6,7 @@ import edu.java.client.Response;
 import edu.java.configuration.ApplicationConfig;
 import edu.java.dto.exception.NotFoundException;
 import edu.java.dto.request.LinkUpdateRequest;
-import edu.java.entity.Chat;
+import edu.java.entity.jdbc.Chat;
 import edu.java.service.ChatService;
 import edu.java.service.LinkService;
 import java.time.OffsetDateTime;
@@ -54,7 +54,7 @@ public class LinkUpdaterScheduler {
                 if (response.getUpdateDate().isAfter(link.getUpdatedAt())) {
                     linkService.setLastUpdateDate(link.getId(), response.getUpdateDate());
 
-                    Collection<Chat> chats = chatService.getChatByLink(link.getId());
+                    Collection<Chat> chats = chatService.getChatsByLink(link.getId());
                     botClient.sendUpdate(new LinkUpdateRequest(
                         link.getId(),
                         link.getUrl(),
