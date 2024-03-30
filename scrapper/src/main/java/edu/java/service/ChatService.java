@@ -4,7 +4,7 @@ import edu.java.dto.exception.BadRequestException;
 import edu.java.dto.exception.NotFoundException;
 import edu.java.dto.response.ChatResponse;
 import edu.java.dto.response.ListChatResponse;
-import edu.java.entity.jdbc.Chat;
+import edu.java.entity.Chat;
 import java.util.Collection;
 
 public interface ChatService {

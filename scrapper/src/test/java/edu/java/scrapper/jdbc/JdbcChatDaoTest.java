@@ -2,8 +2,8 @@ package edu.java.scrapper.jdbc;
 
 import edu.java.dao.JdbcChatDao;
 import edu.java.dao.JdbcLinkDao;
-import edu.java.entity.jdbc.Chat;
-import edu.java.entity.jdbc.Link;
+import edu.java.entity.Chat;
+import edu.java.entity.Link;
 import edu.java.scrapper.IntegrationTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

@@ -1,6 +1,6 @@
 package edu.java.dao;
 
-import edu.java.entity.jdbc.Link;
+import edu.java.entity.Link;
 import java.net.URI;
 import java.sql.Timestamp;
 import java.time.Duration;

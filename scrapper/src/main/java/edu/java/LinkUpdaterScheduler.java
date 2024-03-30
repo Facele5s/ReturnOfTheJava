@@ -6,7 +6,7 @@ import edu.java.client.Response;
 import edu.java.configuration.ApplicationConfig;
 import edu.java.dto.exception.NotFoundException;
 import edu.java.dto.request.LinkUpdateRequest;
-import edu.java.entity.jdbc.Chat;
+import edu.java.entity.Chat;
 import edu.java.service.ChatService;
 import edu.java.service.LinkService;
 import java.time.OffsetDateTime;
