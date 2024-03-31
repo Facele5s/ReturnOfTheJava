@@ -1,14 +1,41 @@
 app:
   telegram-token: unset
+  retry:
+    http-statuses: 500, 503, 504
+    type: constant
+    max-attempts: 7
+    config:
+      initial-interval-millis: 1000
+      max-interval-millis: 30000
+      multiplier: 2
 
 spring:
   application:
     name: bot
+  cache:
+    cache-names:
+      - bot-rate-limit
+    caffeine:
+      spec: maximumSize=200000,expireAfterAccess=60s
+    jcache:
+      provider: com.github.benmanes.caffeine.jcache.spi.CaffeineCachingProvider
   jackson:
     time-zone: UTC
 
 server:
   port: 8090
+
+bucket4j:
+  filters:
+    - cache-name: bot-rate-limit
+      http-response-body: "{\"status\": 503, \"error\": \"Service Unavailable\", \"message\": \"Service Unavailable\"}"
+      rate-limits:
+        - bandwidths:
+            - capacity: 100
+              refill-speed: interval
+              time: 1
+              unit: minutes
+      url: /.*
 
 logging:
   config: classpath:log4j2-plain.xml
