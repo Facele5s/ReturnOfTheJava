@@ -121,10 +121,10 @@ public class JdbcLinkDaoTest extends IntegrationTest {
     }
 
     @Test
-    @DisplayName("Getting links by URL")
+    @DisplayName("Getting chats with link")
     @Transactional
     @Rollback
-    public void findLinksByUrlTest() {
+    public void findChatsByLinkTest() {
         //Arrange
         chatDao.add(1L, null);
         chatDao.add(2L, null);

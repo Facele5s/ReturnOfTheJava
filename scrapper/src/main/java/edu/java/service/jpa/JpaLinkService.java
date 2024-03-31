@@ -43,6 +43,10 @@ public class JpaLinkService implements LinkService {
     public LinkResponse removeById(Long linkId) {
         Link link = linkRepository.findById(linkId).get();
 
+        chatRepository.findChatEntitiesByLinksContains(link)
+            .forEach(chat -> {
+                chat.getLinks().remove(link);
+            });
         linkRepository.delete(link);
 
         return new LinkResponse(null, link.getUrl());

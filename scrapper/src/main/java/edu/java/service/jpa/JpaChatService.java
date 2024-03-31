@@ -35,6 +35,9 @@ public class JpaChatService implements ChatService {
     public ChatResponse deleteChat(Long chatId) throws NotFoundException {
         Chat chat = chatRepository.findById(chatId).get();
 
+        Collection<Link> links = chat.getLinks().stream()
+            .filter(link -> link.getChats().size() == 1).toList();
+        linkRepository.deleteAll(links);
         chatRepository.deleteById(chatId);
 
         return new ChatResponse(chat.getId(), chat.getRegistrationDate());

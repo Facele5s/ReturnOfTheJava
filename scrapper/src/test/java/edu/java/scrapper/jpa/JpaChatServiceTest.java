@@ -2,6 +2,7 @@ package edu.java.scrapper.jpa;
 
 import edu.java.dto.response.ListChatResponse;
 import edu.java.repository.JpaChatRepository;
+import edu.java.repository.JpaLinkRepository;
 import edu.java.scrapper.IntegrationTest;
 import edu.java.service.ChatService;
 import edu.java.service.jpa.JpaChatService;
@@ -18,15 +19,19 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
 public class JpaChatServiceTest extends IntegrationTest {
-    /*private static final Long CHAT_ID = 100500L;
+    private static final Long CHAT_ID = 100500L;
 
     @Autowired
     private JpaChatRepository chatRepository;
+
+    @Autowired
+    private JpaLinkRepository linkRepository;
+
     private ChatService chatService;
 
     @BeforeEach
     public void setup() {
-        chatService = new JpaChatService(chatRepository);
+        chatService = new JpaChatService(chatRepository, linkRepository);
     }
 
     @Test
@@ -38,7 +43,7 @@ public class JpaChatServiceTest extends IntegrationTest {
         chatService.registerChat(CHAT_ID);
 
         //Assert
-        //assertTrue(chatRepository.existsById(CHAT_ID));
+        assertTrue(chatRepository.existsById(CHAT_ID));
     }
 
     @Test
@@ -53,7 +58,7 @@ public class JpaChatServiceTest extends IntegrationTest {
         chatService.deleteChat(CHAT_ID);
 
         //Assert
-        //assertFalse(chatRepository.existsById(CHAT_ID));
+        assertFalse(chatRepository.existsById(CHAT_ID));
     }
 
     @Test
@@ -70,5 +75,5 @@ public class JpaChatServiceTest extends IntegrationTest {
         //Assert
         assertEquals(1, listChatResponse.chats().size());
         assertEquals(CHAT_ID, listChatResponse.chats().getFirst().id());
-    }*/
+    }
 }

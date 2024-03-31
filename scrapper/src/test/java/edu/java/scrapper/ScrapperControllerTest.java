@@ -116,7 +116,7 @@ public class ScrapperControllerTest {
         LinkResponse linkResponse = new LinkResponse(CHAT_ID, url);
         when(chatService.getAllChats()).thenReturn(listChatResponse);
         when(linkService.getLinksByChat(CHAT_ID)).thenReturn(listLinkResponse);
-        when(linkService.removeById(any(Long.class))).thenReturn(linkResponse);
+        when(linkService.untrack(CHAT_ID, url)).thenReturn(linkResponse);
 
         //Act
         ResponseEntity<LinkResponse> response = scrapperController.deleteLink(CHAT_ID, request);

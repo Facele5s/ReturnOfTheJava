@@ -15,4 +15,6 @@ public interface JpaLinkRepository extends JpaRepository<Link, Long> {
     Collection<Link> findLinksByChatsContains(Chat chat);
 
     Collection<Link> findLinksByCheckedAtBefore(OffsetDateTime dateTime);
+
+    boolean existsByUrl(URI url);
 }
