@@ -1,11 +1,8 @@
 package edu.java.entity;
 
-import java.net.URI;
-import java.time.OffsetDateTime;
-import java.util.HashSet;
-import java.util.Set;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -14,6 +11,10 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
+import java.net.URI;
+import java.time.OffsetDateTime;
+import java.util.HashSet;
+import java.util.Set;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -27,6 +28,7 @@ public class Link {
     private Long id;
 
     @Column(name = "url")
+    @Convert(converter = UriConverter.class)
     private URI url;
 
     @Column(name = "updated_at")
@@ -38,8 +40,8 @@ public class Link {
     @ManyToMany(cascade = {CascadeType.ALL})
     @JoinTable(
         name = "chat_link",
-        joinColumns = @JoinColumn(name = "link_id", referencedColumnName = "id"),
-        inverseJoinColumns = @JoinColumn(name = "chat_id", referencedColumnName = "id")
+        joinColumns = @JoinColumn(name = "link_id"),
+        inverseJoinColumns = @JoinColumn(name = "chat_id")
     )
     Set<Chat> chats = new HashSet<>();
 

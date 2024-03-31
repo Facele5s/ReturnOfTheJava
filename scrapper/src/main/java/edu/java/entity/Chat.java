@@ -1,8 +1,5 @@
 package edu.java.entity;
 
-import java.time.OffsetDateTime;
-import java.util.HashSet;
-import java.util.Set;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -11,6 +8,9 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
+import java.time.OffsetDateTime;
+import java.util.HashSet;
+import java.util.Set;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -28,8 +28,8 @@ public class Chat {
     @ManyToMany(cascade = {CascadeType.ALL})
     @JoinTable(
         name = "chat_link",
-        joinColumns = @JoinColumn(name = "chat_id", referencedColumnName = "id"),
-        inverseJoinColumns = @JoinColumn(name = "link_id", referencedColumnName = "id")
+        joinColumns = @JoinColumn(name = "chat_id"),
+        inverseJoinColumns = @JoinColumn(name = "link_id")
     )
     Set<Link> links = new HashSet<>();
 

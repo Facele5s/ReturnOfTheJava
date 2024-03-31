@@ -5,8 +5,9 @@ import edu.java.dto.exception.NotFoundException;
 import edu.java.dto.response.ChatResponse;
 import edu.java.dto.response.ListChatResponse;
 import edu.java.entity.Chat;
-import edu.java.entity.ChatEntity;
+import edu.java.entity.Link;
 import edu.java.repository.JpaChatRepository;
+import edu.java.repository.JpaLinkRepository;
 import edu.java.service.ChatService;
 import java.time.OffsetDateTime;
 import java.util.Collection;
@@ -16,26 +17,27 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class JpaChatService implements ChatService {
     private final JpaChatRepository chatRepository;
+    private final JpaLinkRepository linkRepository;
 
     @Override
     public ChatResponse registerChat(Long chatId) throws BadRequestException {
-        ChatEntity entity = new ChatEntity();
-        entity.setId(chatId);
-        entity.setRegistrationDate(OffsetDateTime.now());
+        Chat chat = new Chat();
+        chat.setId(chatId);
+        chat.setRegistrationDate(OffsetDateTime.now());
 
-        chatRepository.save(entity);
+        chatRepository.save(chat);
 
-        ChatEntity savedChat = chatRepository.findById(chatId).get();
+        Chat savedChat = chatRepository.findById(chatId).get();
         return new ChatResponse(savedChat.getId(), savedChat.getRegistrationDate());
     }
 
     @Override
     public ChatResponse deleteChat(Long chatId) throws NotFoundException {
-        ChatEntity entity = chatRepository.findById(chatId).get();
+        Chat chat = chatRepository.findById(chatId).get();
 
-        chatRepository.delete(entity);
+        chatRepository.deleteById(chatId);
 
-        return new ChatResponse(entity.getId(), entity.getRegistrationDate());
+        return new ChatResponse(chat.getId(), chat.getRegistrationDate());
     }
 
     @Override
@@ -49,15 +51,15 @@ public class JpaChatService implements ChatService {
 
     @Override
     public ChatResponse getChatById(Long chatId) throws NotFoundException {
-        ChatEntity entity = chatRepository.findById(chatId).get();
+        Chat chat = chatRepository.findById(chatId).get();
 
-        return new ChatResponse(entity.getId(), entity.getRegistrationDate());
+        return new ChatResponse(chat.getId(), chat.getRegistrationDate());
     }
 
     @Override
-    public Collection<Chat> getChatByLink(Long linkId) {
-        return chatRepository.findByLinkId(linkId).stream()
-            .map(c -> new Chat(c.getId(), c.getRegistrationDate()))
-            .toList();
+    public Collection<Chat> getChatsByLink(Long linkId) {
+        Link link = linkRepository.findById(linkId).get();
+
+        return chatRepository.findChatEntitiesByLinksContains(link);
     }
 }

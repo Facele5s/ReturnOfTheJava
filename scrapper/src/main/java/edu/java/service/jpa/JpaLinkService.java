@@ -2,8 +2,9 @@ package edu.java.service.jpa;
 
 import edu.java.dto.response.LinkResponse;
 import edu.java.dto.response.ListLinkResponse;
+import edu.java.entity.Chat;
 import edu.java.entity.Link;
-import edu.java.entity.LinkEntity;
+import edu.java.repository.JpaChatRepository;
 import edu.java.repository.JpaLinkRepository;
 import edu.java.service.LinkService;
 import java.net.URI;
@@ -16,43 +17,57 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class JpaLinkService implements LinkService {
     private final JpaLinkRepository linkRepository;
+    private final JpaChatRepository chatRepository;
 
     @Override
     public LinkResponse add(Long chatId, URI url) {
-        LinkEntity entity = new LinkEntity();
-        entity.setChatId(chatId);
-        entity.setUrl(url);
-        entity.setUpdatedAt(OffsetDateTime.now());
-        entity.setCheckedAt(OffsetDateTime.now());
+        Chat chat = chatRepository.findById(chatId).get();
 
-        linkRepository.save(entity);
+        Link link = linkRepository.findByUrl(url);
+        if (link == null) {
+            link = new Link();
+            link.setUrl(url);
+            link.setUpdatedAt(OffsetDateTime.now());
+            link.setCheckedAt(OffsetDateTime.now());
+        }
+        chat.getLinks().add(link);
 
-        LinkEntity savedLink = linkRepository.findByUrl(chatId, url);
-        return new LinkResponse(savedLink.getChatId(), savedLink.getUrl());
+        linkRepository.save(link);
+        chatRepository.save(chat);
+
+        Link savedLink = linkRepository.findByUrl(url);
+        return new LinkResponse(chatId, savedLink.getUrl());
     }
 
     @Override
     public LinkResponse removeById(Long linkId) {
-        LinkEntity entity = linkRepository.findById(linkId).get();
+        Link link = linkRepository.findById(linkId).get();
 
-        linkRepository.delete(entity);
+        linkRepository.delete(link);
 
-        return new LinkResponse(entity.getChatId(), entity.getUrl());
+        return new LinkResponse(null, link.getUrl());
     }
 
     @Override
-    public LinkResponse removeByUrl(Long chatId, URI url) {
-        LinkEntity entity = linkRepository.findByUrl(chatId, url);
+    public LinkResponse untrack(Long chatId, URI url) {
+        Chat chat = chatRepository.findById(chatId).get();
+        Link link = linkRepository.findByUrl(url);
 
-        linkRepository.delete(entity);
+        chat.getLinks().remove(link);
+        link.getChats().remove(chat);
+        linkRepository.save(link);
+        chatRepository.save(chat);
+        if (link.getChats().isEmpty()) {
+            linkRepository.delete(link);
+        }
 
-        return new LinkResponse(entity.getChatId(), entity.getUrl());
+        return new LinkResponse(chatId, link.getUrl());
     }
 
     @Override
     public ListLinkResponse getAllLinks() {
         List<LinkResponse> linkResponseList = linkRepository.findAll().stream()
-            .map(l -> new LinkResponse(l.getChatId(), l.getUrl()))
+            .map(l -> new LinkResponse(null, l.getUrl()))
             .toList();
 
         return new ListLinkResponse(linkResponseList, linkResponseList.size());
@@ -60,24 +75,17 @@ public class JpaLinkService implements LinkService {
 
     @Override
     public LinkResponse getLinkById(Long linkId) {
-        LinkEntity entity = linkRepository.findById(linkId).get();
+        Link entity = linkRepository.findById(linkId).get();
 
-        return new LinkResponse(entity.getChatId(), entity.getUrl());
+        return new LinkResponse(null, entity.getUrl());
     }
 
     @Override
     public ListLinkResponse getLinksByChat(Long chatId) {
-        List<LinkResponse> linkResponseList = linkRepository.findByChat(chatId).stream()
-            .map(l -> new LinkResponse(l.getChatId(), l.getUrl()))
-            .toList();
+        Chat chat = chatRepository.findById(chatId).get();
 
-        return new ListLinkResponse(linkResponseList, linkResponseList.size());
-    }
-
-    @Override
-    public ListLinkResponse getLinksByUrl(URI url) {
-        List<LinkResponse> linkResponseList = linkRepository.findByUrl(url).stream()
-            .map(l -> new LinkResponse(l.getChatId(), l.getUrl()))
+        List<LinkResponse> linkResponseList = linkRepository.findLinksByChatsContains(chat).stream()
+            .map(l -> new LinkResponse(chatId, l.getUrl()))
             .toList();
 
         return new ListLinkResponse(linkResponseList, linkResponseList.size());
@@ -85,28 +93,29 @@ public class JpaLinkService implements LinkService {
 
     @Override
     public Collection<Link> getLongUncheckedLinks(Duration duration) {
-        return linkRepository.findLongUnchecked(duration).stream()
-            .map(l -> new Link(l.getId(), l.getChatId(), l.getUrl(), l.getUpdatedAt(), l.getCheckedAt()))
-            .toList();
+        OffsetDateTime dateTime = OffsetDateTime.now()
+            .minusSeconds(duration.getSeconds());
+
+        return linkRepository.findLinksByCheckedAtBefore(dateTime);
     }
 
     @Override
     public LinkResponse setLastUpdateDate(Long linkId, OffsetDateTime updateDate) {
-        LinkEntity entity = linkRepository.findById(linkId).get();
+        Link entity = linkRepository.findById(linkId).get();
 
         entity.setUpdatedAt(updateDate);
         linkRepository.save(entity);
 
-        return new LinkResponse(entity.getChatId(), entity.getUrl());
+        return new LinkResponse(null, entity.getUrl());
     }
 
     @Override
     public LinkResponse setLastCheckDate(Long linkId, OffsetDateTime checkDate) {
-        LinkEntity entity = linkRepository.findById(linkId).get();
+        Link entity = linkRepository.findById(linkId).get();
 
         entity.setCheckedAt(checkDate);
         linkRepository.save(entity);
 
-        return new LinkResponse(entity.getChatId(), entity.getUrl());
+        return new LinkResponse(null, entity.getUrl());
     }
 }
