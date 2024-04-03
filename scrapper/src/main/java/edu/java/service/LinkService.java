@@ -12,19 +12,17 @@ import java.util.Collection;
 
 public interface LinkService {
 
-    LinkResponse add(Long chatId, URI url) throws BadRequestException;
+    LinkResponse add(Long chatId, URI url) throws BadRequestException, NotFoundException;
 
     LinkResponse removeById(Long linkId) throws NotFoundException;
 
-    LinkResponse removeByUrl(Long chatId, URI url) throws NotFoundException;
+    LinkResponse untrack(Long chatId, URI url) throws NotFoundException;
 
     ListLinkResponse getAllLinks();
 
     LinkResponse getLinkById(Long linkId) throws NotFoundException;
 
-    ListLinkResponse getLinksByChat(Long chatId);
-
-    ListLinkResponse getLinksByUrl(URI url);
+    ListLinkResponse getLinksByChat(Long chatId) throws NotFoundException;
 
     Collection<Link> getLongUncheckedLinks(Duration duration);
 

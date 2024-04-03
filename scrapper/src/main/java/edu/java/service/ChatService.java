@@ -16,5 +16,5 @@ public interface ChatService {
 
     ChatResponse getChatById(Long chatId) throws NotFoundException;
 
-    Collection<Chat> getChatByLink(Long linkId);
+    Collection<Chat> getChatsByLink(Long linkId);
 }

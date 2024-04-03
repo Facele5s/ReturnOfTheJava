@@ -54,7 +54,7 @@ public class LinkUpdaterScheduler {
                 if (response.getUpdateDate().isAfter(link.getUpdatedAt())) {
                     linkService.setLastUpdateDate(link.getId(), response.getUpdateDate());
 
-                    Collection<Chat> chats = chatService.getChatByLink(link.getId());
+                    Collection<Chat> chats = chatService.getChatsByLink(link.getId());
                     botClient.sendUpdate(new LinkUpdateRequest(
                         link.getId(),
                         link.getUrl(),

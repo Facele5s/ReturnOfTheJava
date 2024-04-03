@@ -15,32 +15,38 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.stereotype.Service;
 
-@Service
 @RequiredArgsConstructor
 public class JdbcLinkService implements LinkService {
     private static final String MSG_LINK_ALREADY_ADDED = "The link is already added";
     private static final String MSG_LINK_NOT_TRACKED = "The link is not tracked";
+    private static final String MSG_NOT_REGISTERED_TRACKED = "The chat is not registered or the link is not tracked";
+    private static final String MSG_CHAT_NOT_REGISTERED = "The chat is not registered yet";
 
     private static final String DESC_ADD_LINK_ADDED = "You can't add an already added link";
     private static final String DESC_DEL_LINK_UNTRACKED = "You can't delete an untracked link";
     private static final String DESC_GET_LINK_UNTRACKED = "You can't get an untracked link";
+    private static final String DESC_LINKS_UNREG = "You can't manipulate with links for unregistered chat";
     private static final String DESC_UPDATE_LINK_UNTRACKED = "You can't update an untracked link";
     private static final String DESC_CHECK_LINK_UNTRACKED = "You can't check an untracked link";
 
     private final JdbcLinkDao linkDao;
 
     @Override
-    public LinkResponse add(Long chatId, URI url) throws BadRequestException {
+    public LinkResponse add(Long chatId, URI url) throws BadRequestException, NotFoundException {
         try {
             Link link = linkDao.add(chatId, url);
 
-            return new LinkResponse(link.getId(), link.getUrl());
+            return new LinkResponse(chatId, link.getUrl());
         } catch (DuplicateKeyException e) {
             throw new BadRequestException(
                 MSG_LINK_ALREADY_ADDED,
                 DESC_ADD_LINK_ADDED
+            );
+        } catch (EmptyResultDataAccessException e) {
+            throw new NotFoundException(
+                MSG_CHAT_NOT_REGISTERED,
+                DESC_LINKS_UNREG
             );
         }
     }
@@ -50,7 +56,7 @@ public class JdbcLinkService implements LinkService {
         try {
             Link link = linkDao.remove(linkId);
 
-            return new LinkResponse(link.getId(), link.getUrl());
+            return new LinkResponse(null, link.getUrl());
         } catch (EmptyResultDataAccessException e) {
             throw new NotFoundException(
                 MSG_LINK_NOT_TRACKED,
@@ -60,21 +66,24 @@ public class JdbcLinkService implements LinkService {
     }
 
     @Override
-    public LinkResponse removeByUrl(Long chatId, URI url) throws NotFoundException {
-        Long linkId = linkDao.findByUrl(url).stream()
-            .map(Link::getChatId)
-            .filter(i -> i.equals(chatId))
-            .findFirst()
-            .orElse(-1L);
+    public LinkResponse untrack(Long chatId, URI url) throws NotFoundException {
+        try {
+            Link link = linkDao.untrack(chatId, url);
 
-        return removeById(linkId);
+            return new LinkResponse(chatId, link.getUrl());
+        } catch (EmptyResultDataAccessException e) {
+            throw new NotFoundException(
+                MSG_NOT_REGISTERED_TRACKED,
+                DESC_LINKS_UNREG
+            );
+        }
     }
 
     @Override
     public ListLinkResponse getAllLinks() {
         List<LinkResponse> linkResponseList = linkDao.findAll()
             .stream()
-            .map(link -> new LinkResponse(link.getId(), link.getUrl()))
+            .map(link -> new LinkResponse(null, link.getUrl()))
             .toList();
 
         return new ListLinkResponse(linkResponseList, linkResponseList.size());
@@ -85,7 +94,7 @@ public class JdbcLinkService implements LinkService {
         try {
             Link link = linkDao.findById(linkId);
 
-            return new LinkResponse(link.getId(), link.getUrl());
+            return new LinkResponse(null, link.getUrl());
         } catch (EmptyResultDataAccessException e) {
             throw new NotFoundException(
                 MSG_LINK_NOT_TRACKED,
@@ -95,23 +104,20 @@ public class JdbcLinkService implements LinkService {
     }
 
     @Override
-    public ListLinkResponse getLinksByChat(Long chatId) {
-        List<LinkResponse> linkResponseList = linkDao.findByChat(chatId)
-            .stream()
-            .map(link -> new LinkResponse(link.getId(), link.getUrl()))
-            .toList();
+    public ListLinkResponse getLinksByChat(Long chatId) throws NotFoundException {
+        try {
+            List<LinkResponse> linkResponseList = linkDao.findByChat(chatId)
+                .stream()
+                .map(link -> new LinkResponse(chatId, link.getUrl()))
+                .toList();
 
-        return new ListLinkResponse(linkResponseList, linkResponseList.size());
-    }
-
-    @Override
-    public ListLinkResponse getLinksByUrl(URI url) {
-        List<LinkResponse> linkResponseList = linkDao.findByUrl(url)
-            .stream()
-            .map(link -> new LinkResponse(link.getId(), link.getUrl()))
-            .toList();
-
-        return new ListLinkResponse(linkResponseList, linkResponseList.size());
+            return new ListLinkResponse(linkResponseList, linkResponseList.size());
+        } catch (EmptyResultDataAccessException e) {
+            throw new NotFoundException(
+                MSG_CHAT_NOT_REGISTERED,
+                DESC_LINKS_UNREG
+            );
+        }
     }
 
     @Override
@@ -124,7 +130,7 @@ public class JdbcLinkService implements LinkService {
         try {
             Link link = linkDao.updateLink(linkId, updateDate);
 
-            return new LinkResponse(link.getId(), link.getUrl());
+            return new LinkResponse(null, link.getUrl());
         } catch (EmptyResultDataAccessException e) {
             throw new NotFoundException(
                 MSG_LINK_NOT_TRACKED,
@@ -138,7 +144,7 @@ public class JdbcLinkService implements LinkService {
         try {
             Link link = linkDao.checkLink(linkId, checkDate);
 
-            return new LinkResponse(link.getId(), link.getUrl());
+            return new LinkResponse(null, link.getUrl());
         } catch (EmptyResultDataAccessException e) {
             throw new NotFoundException(
                 MSG_LINK_NOT_TRACKED,
