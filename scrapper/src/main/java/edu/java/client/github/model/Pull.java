@@ -1,11 +1,11 @@
-package edu.java.client.github;
+package edu.java.client.github.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import java.time.OffsetDateTime;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Getter;
-import java.time.OffsetDateTime;
 
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
