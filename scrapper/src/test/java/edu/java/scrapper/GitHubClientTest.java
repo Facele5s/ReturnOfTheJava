@@ -57,9 +57,9 @@ public class GitHubClientTest {
         GitHubResponse response = gitHubClient.getResponse(URI.create("github.com/testUser/testRepo"));
 
         //Assert
-        assertEquals(674765843, response.id());
-        assertEquals("Graph_GUI", response.name());
-        assertEquals("2023-08-12T00:48:01Z", response.pushedAt().toString());
-        assertEquals("2023-08-04T23:55:05Z", response.updatedAt().toString());
+        assertEquals(674765843, response.getId());
+        assertEquals("Graph_GUI", response.getName());
+        assertEquals("2023-08-12T00:48:01Z", response.getPushedAt().toString());
+        assertEquals("2023-08-04T23:55:05Z", response.getUpdatedAt().toString());
     }
 }
