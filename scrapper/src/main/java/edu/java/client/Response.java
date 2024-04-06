@@ -1,12 +1,12 @@
 package edu.java.client;
 
 import java.time.OffsetDateTime;
-import java.util.Map;
+import java.util.List;
 
 public interface Response {
     Long getId();
 
-    Map<String, String> getParams();
+    List<String> getParams();
 
     OffsetDateTime getUpdateDate();
 }

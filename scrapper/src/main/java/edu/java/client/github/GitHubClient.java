@@ -46,19 +46,19 @@ public class GitHubClient implements Client {
     @Override
     public String getUpdateDescription(Response response) {
         OffsetDateTime updateDate = response.getUpdateDate();
-        String userName = response.getParams().get("userName");
-        String repoName = response.getParams().get("repoName");
+        String userName = response.getParams().get(0);
+        String repoName = response.getParams().get(1);
         String description = "";
 
         if (isCommited(updateDate, userName, repoName)) {
             description = "There is a new commit!";
         }
 
-        if (isPulled(updateDate, userName, repoName)) {
+        if (description.isEmpty() && isPulled(updateDate, userName, repoName)) {
             description = "There is a new pull request!";
         }
 
-        if (isReleased(updateDate, userName, repoName)) {
+        if (description.isEmpty() && isReleased(updateDate, userName, repoName)) {
             description = "There is a new release!";
         }
 

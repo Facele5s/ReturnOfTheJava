@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import edu.java.client.Response;
 import edu.java.client.github.model.Owner;
 import java.time.OffsetDateTime;
-import java.util.Map;
+import java.util.List;
 import lombok.Data;
 
 @Data
@@ -27,8 +27,8 @@ public class GitHubResponse implements Response {
     }
 
     @Override
-    public Map<String, String> getParams() {
-        return Map.of("username", owner.getLogin(), "repoName", name);
+    public List<String> getParams() {
+        return List.of(owner.getLogin(), name);
     }
 
     @Override
