@@ -1,6 +1,5 @@
 package edu.java;
 
-import edu.java.client.BotClient;
 import edu.java.client.Client;
 import edu.java.client.Response;
 import edu.java.configuration.ApplicationConfig;
@@ -12,6 +11,7 @@ import edu.java.service.LinkService;
 import java.time.OffsetDateTime;
 import java.util.Collection;
 import java.util.List;
+import edu.java.service.LinkUpdateService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -24,7 +24,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class LinkUpdaterScheduler {
     private final ApplicationConfig config;
-    private final BotClient botClient;
+    private final LinkUpdateService updateService;
 
     private final LinkService linkService;
     private final ChatService chatService;
@@ -55,12 +55,14 @@ public class LinkUpdaterScheduler {
                     linkService.setLastUpdateDate(link.getId(), response.getUpdateDate());
 
                     Collection<Chat> chats = chatService.getChatsByLink(link.getId());
-                    botClient.sendUpdate(new LinkUpdateRequest(
+                    LinkUpdateRequest updateRequest = new LinkUpdateRequest(
                         link.getId(),
                         link.getUrl(),
                         "",
                         chats.stream().map(Chat::getId).toList()
-                    ));
+                    );
+
+                    updateService.sendUpdate(updateRequest);
                 }
             } catch (NotFoundException e) {
                 log.error(e.getDescription());
