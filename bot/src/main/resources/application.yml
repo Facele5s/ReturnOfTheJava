@@ -12,6 +12,7 @@ app:
     bootstrap-servers: localhost:9092
     topic-config:
       name: updates
+    group: group
 
 spring:
   application:

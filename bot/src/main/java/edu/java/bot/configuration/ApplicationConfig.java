@@ -35,6 +35,7 @@ public record ApplicationConfig(
 
     public record KafkaConfig(
         String bootstrapServers,
+        String group,
         TopicConfig topicConfig
     ) {
         public record TopicConfig(
