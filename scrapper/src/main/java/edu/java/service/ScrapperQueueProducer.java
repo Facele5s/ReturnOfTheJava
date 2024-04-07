@@ -13,6 +13,8 @@ public class ScrapperQueueProducer {
     private final KafkaTemplate<Long, LinkUpdateRequest> kafkaTemplate;
 
     public void send(LinkUpdateRequest updateRequest) {
+        String topicName = config.kafkaConfig().topicConfig().name();
 
+        kafkaTemplate.send(topicName, updateRequest.id(), updateRequest);
     }
 }
