@@ -8,11 +8,12 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class ScrapperQueueProducer {
+public class ScrapperQueueProducer implements LinkUpdateService {
     private final ApplicationConfig config;
     private final KafkaTemplate<Long, LinkUpdateRequest> kafkaTemplate;
 
-    public void send(LinkUpdateRequest updateRequest) {
+    @Override
+    public void sendUpdate(LinkUpdateRequest updateRequest) {
         String topicName = config.kafkaConfig().topicConfig().name();
 
         kafkaTemplate.send(topicName, updateRequest.id(), updateRequest);

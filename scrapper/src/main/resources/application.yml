@@ -18,6 +18,7 @@ app:
       name: updates
       partitions: 2
       replicas: 2
+  use-queue: true
 
 spring:
   application:
