@@ -22,17 +22,12 @@ import org.springframework.kafka.support.serializer.JsonSerializer;
 public class KafkaConfiguration {
     private final ApplicationConfig config;
 
-    private final String bootstrapServers = config.kafkaConfig().bootstrapServers();
-    private final String topicName = config.kafkaConfig().topicConfig().name();
-    private final Integer partitions = config.kafkaConfig().topicConfig().partitions();
-    private final Integer replicas = config.kafkaConfig().topicConfig().replicas();
-
     @Bean
     public NewTopic topic() {
         return TopicBuilder
-            .name(topicName)
-            .partitions(partitions)
-            .replicas(replicas)
+            .name(config.kafkaConfig().topicConfig().name())
+            .partitions(config.kafkaConfig().topicConfig().partitions())
+            .replicas(config.kafkaConfig().topicConfig().replicas())
             .build();
     }
 
@@ -51,7 +46,7 @@ public class KafkaConfiguration {
     private Map<String, Object> senderProps() {
         Map<String, Object> props = new HashMap<>();
 
-        props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
+        props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, config.kafkaConfig().bootstrapServers());
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, IntegerSerializer.class);
         props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
 
