@@ -12,7 +12,8 @@ public record ApplicationConfig(
     @NotEmpty
     String telegramToken,
     @NotNull
-    Retry retry
+    Retry retry,
+    KafkaConfig kafkaConfig
 ) {
     public record Retry(
         Set<Integer> httpStatuses,
@@ -30,5 +31,17 @@ public record ApplicationConfig(
             Double multiplier
         ) {
         }
+    }
+
+    public record KafkaConfig(
+        String bootstrapServers,
+        TopicConfig topicConfig
+    ) {
+        public record TopicConfig(
+            String name
+        ) {
+
+        }
+
     }
 }
