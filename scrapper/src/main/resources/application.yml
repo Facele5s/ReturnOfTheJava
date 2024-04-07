@@ -12,6 +12,12 @@ app:
       initial-interval-millis: 1000
       max-interval-millis: 30000
       multiplier: 2
+  kafka-config:
+    bootstrap-servers: localhost:9092
+    topic-config:
+      name: updates
+      partitions: 2
+      replicas: 2
 
 spring:
   application:
