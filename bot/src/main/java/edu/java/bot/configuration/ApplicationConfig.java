@@ -39,7 +39,9 @@ public record ApplicationConfig(
         TopicConfig topicConfig
     ) {
         public record TopicConfig(
-            String name
+            String name,
+            Integer partitions,
+            Integer replicas
         ) {
 
         }

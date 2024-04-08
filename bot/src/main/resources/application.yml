@@ -12,6 +12,8 @@ app:
     bootstrap-servers: localhost:9092
     topic-config:
       name: updates
+      partitions: 2
+      replicas: 2
     group: group
 
 spring:
