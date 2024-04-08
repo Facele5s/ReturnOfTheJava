@@ -13,7 +13,7 @@ app:
     topic-config:
       name: updates
       partitions: 2
-      replicas: 2
+      replicas: 1
     group: group
 
 spring:
