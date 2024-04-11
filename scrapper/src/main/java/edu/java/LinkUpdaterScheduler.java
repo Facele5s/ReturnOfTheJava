@@ -58,7 +58,7 @@ public class LinkUpdaterScheduler {
                     LinkUpdateRequest updateRequest = new LinkUpdateRequest(
                         link.getId(),
                         link.getUrl(),
-                        "",
+                        client.getUpdateDescription(response),
                         chats.stream().map(Chat::getId).toList()
                     );
 

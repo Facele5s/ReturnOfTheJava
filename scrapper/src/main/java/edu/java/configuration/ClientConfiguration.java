@@ -18,6 +18,10 @@ public class ClientConfiguration {
     String gitHubBaseUrl;
 
     @NotNull
+    @Value("${app.github-token}")
+    String gitHubToken;
+
+    @NotNull
     @Value("${client.base-url.stackoverflow:https://api.stackexchange.com/2.3}")
     String stackOverFlowBaseUrl;
 
@@ -30,6 +34,7 @@ public class ClientConfiguration {
         return WebClient
             .builder()
             .baseUrl(gitHubBaseUrl)
+            .defaultHeader("Authorization", gitHubToken)
             .build();
     }
 

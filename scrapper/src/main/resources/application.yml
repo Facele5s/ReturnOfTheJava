@@ -19,6 +19,7 @@ app:
       partitions: 2
       replicas: 1
   use-queue: true
+  git-hub-token: unset
 
 spring:
   application:

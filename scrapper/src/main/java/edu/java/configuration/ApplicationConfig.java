@@ -1,5 +1,6 @@
 package edu.java.configuration;
 
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import java.time.Duration;
 import java.util.Set;
@@ -13,6 +14,8 @@ public record ApplicationConfig(
     Scheduler scheduler,
     @NotNull
     AccessType databaseAccessType,
+    @NotEmpty
+    String gitHubToken,
     @NotNull
     Retry retry,
     KafkaConfig kafkaConfig,

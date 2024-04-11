@@ -1,6 +1,8 @@
 package edu.java.client.github;
 
 import edu.java.client.Client;
+import edu.java.client.Response;
+import edu.java.client.github.model.GitHubResponse;
 import java.net.URI;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -32,6 +34,11 @@ public class GitHubClient implements Client {
             .retrieve()
             .bodyToMono(GitHubResponse.class)
             .block();
+    }
+
+    @Override
+    public String getUpdateDescription(Response response) { //TODO
+        return null;
     }
 
     @Override
