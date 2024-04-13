@@ -2,7 +2,6 @@ package edu.java.client.github;
 
 import edu.java.client.Client;
 import edu.java.client.Response;
-import edu.java.client.github.model.GitHubResponse;
 import java.net.URI;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

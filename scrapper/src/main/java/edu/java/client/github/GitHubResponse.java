@@ -1,7 +1,8 @@
-package edu.java.client.github.model;
+package edu.java.client.github;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import edu.java.client.Response;
+import edu.java.client.github.model.Owner;
 import java.time.OffsetDateTime;
 import java.util.HashMap;
 import java.util.Map;
