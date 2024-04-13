@@ -17,7 +17,7 @@ public class JdbcGithubReleaseDao {
     private static final String QUERY_FIND_ALL = "SELECT * FROM github_release";
     private static final String QUERY_FIND = "SELECT * FROM github_release WHERE id = ?";
     private static final String QUERY_FIND_BY_REPO = "SELECT * FROM github_release WHERE repo_id = ?";
-    private static final String QUERY_FIND_NEW = "SELECT * FROM github_release WHERE published_at > ?";
+    private static final String QUERY_FIND_NEWER = "SELECT * FROM github_release WHERE published_at > ?";
     private static final String QUERY_REMOVE = "DELETE FROM github_release WHERE id = ?";
 
     private final JdbcTemplate jdbcTemplate;
@@ -53,8 +53,8 @@ public class JdbcGithubReleaseDao {
     }
 
     @Transactional
-    public Collection<GithubRelease> findNew(OffsetDateTime dateTime) {
-        return jdbcTemplate.query(QUERY_FIND_NEW, new BeanPropertyRowMapper<>(GithubRelease.class), dateTime);
+    public Collection<GithubRelease> findNewer(OffsetDateTime dateTime) {
+        return jdbcTemplate.query(QUERY_FIND_NEWER, new BeanPropertyRowMapper<>(GithubRelease.class), dateTime);
     }
 
     @Transactional

@@ -11,24 +11,25 @@ import org.springframework.transaction.annotation.Transactional;
 @Component
 @RequiredArgsConstructor
 public class JdbcGithubRepositoryDao {
-    private static final String QUERY_ADD = "";
-    private static final String QUERY_FIND_ALL = "";
-    private static final String QUERY_FIND = "";
-    private static final String QUERY_FIND_BY_USER_NAME = "";
-    private static final String QUERY_FIND_BY_NAME = "";
-    private static final String QUERY_REMOVE = "";
-    private static final String QUERY_REMOVE_BY_NAME = "";
+    private static final String QUERY_ADD = "INSERT INTO github_repository"
+        + " (id, user_name, name) VALUES (?, ?, ?) RETURNING *";
+    private static final String QUERY_FIND_ALL = "SELECT * FROM github_repository";
+    private static final String QUERY_FIND = "SELECT * FROM github_repository WHERE id = ?";
+    private static final String QUERY_FIND_BY_USER_NAME = "SELECT * FROM github_repository WHERE user_name = ?";
+    private static final String QUERY_FIND_BY_NAME = "SELECT * FROM github_repository WHERE name = ?";
+    private static final String QUERY_REMOVE = "DELETE FROM github_repository WHERE id = ?";
+    private static final String QUERY_REMOVE_BY_NAME = "DELETE FROM github_repository WHERE name = ?";
 
     private final JdbcTemplate jdbcTemplate;
 
     @Transactional
-    public GithubRepository add(Long id, String userName, String repoName) {
+    public GithubRepository add(Long id, String userName, String name) {
         return jdbcTemplate.queryForObject(
             QUERY_ADD,
             new BeanPropertyRowMapper<>(GithubRepository.class),
             id,
             userName,
-            repoName
+            name
         );
     }
 
@@ -56,7 +57,7 @@ public class JdbcGithubRepositoryDao {
     }
 
     @Transactional
-    public GithubRepository findByRepoName(String name) {
+    public GithubRepository findByName(String name) {
         return jdbcTemplate.queryForObject(
             QUERY_FIND_BY_NAME,
             new BeanPropertyRowMapper<>(GithubRepository.class),

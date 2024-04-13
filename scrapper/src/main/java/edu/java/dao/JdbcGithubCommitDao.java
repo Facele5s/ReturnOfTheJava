@@ -18,7 +18,7 @@ public class JdbcGithubCommitDao {
     private static final String QUERY_FIND = "SELECT * FROM github_commit WHERE sha = ?";
     private static final String QUERY_FIND_BY_REPO = "SELECT * FROM github_commit WHERE repo_id = ?";
     private static final String QUERY_FIND_BY_AUTHOR = "SELECT * FROM github_commit WHERE author = ?";
-    private static final String QUERY_FIND_NEW = "SELECT * FROM github_commit WHERE created_at > ?";
+    private static final String QUERY_FIND_NEWER = "SELECT * FROM github_commit WHERE created_at > ?";
     private static final String QUERY_REMOVE = "DELETE FROM github_commit WHERE sha = ? RETURNING *";
 
     private final JdbcTemplate jdbcTemplate;
@@ -60,8 +60,8 @@ public class JdbcGithubCommitDao {
     }
 
     @Transactional
-    public Collection<GithubCommit> findNew(OffsetDateTime dateTime) {
-        return jdbcTemplate.query(QUERY_FIND_NEW, new BeanPropertyRowMapper<>(GithubCommit.class), dateTime);
+    public Collection<GithubCommit> findNewer(OffsetDateTime dateTime) {
+        return jdbcTemplate.query(QUERY_FIND_NEWER, new BeanPropertyRowMapper<>(GithubCommit.class), dateTime);
     }
 
     @Transactional
