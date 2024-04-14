@@ -61,7 +61,11 @@ public class JdbcGithubCommitDao {
 
     @Transactional
     public Collection<GithubCommit> findNewer(OffsetDateTime dateTime) {
-        return jdbcTemplate.query(QUERY_FIND_NEWER, new BeanPropertyRowMapper<>(GithubCommit.class), dateTime);
+        return jdbcTemplate.query(
+            QUERY_FIND_NEWER,
+            new BeanPropertyRowMapper<>(GithubCommit.class),
+            dateTime.toInstant()
+        );
     }
 
     @Transactional

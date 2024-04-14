@@ -54,7 +54,11 @@ public class JdbcGithubPullDao {
 
     @Transactional
     public Collection<GithubPull> findNewer(OffsetDateTime dateTime) {
-        return jdbcTemplate.query(QUERY_FIND_NEWER, new BeanPropertyRowMapper<>(GithubPull.class), dateTime);
+        return jdbcTemplate.query(
+            QUERY_FIND_NEWER,
+            new BeanPropertyRowMapper<>(GithubPull.class),
+            dateTime.toInstant()
+        );
     }
 
     @Transactional
