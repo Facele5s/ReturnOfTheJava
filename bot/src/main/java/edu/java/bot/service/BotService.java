@@ -4,9 +4,9 @@ import com.pengrad.telegrambot.request.SendMessage;
 import edu.java.bot.ObserverBot;
 import edu.java.dto.exception.BadRequestException;
 import edu.java.dto.request.LinkUpdateRequest;
+import io.micrometer.core.instrument.Counter;
 import java.util.HashMap;
 import java.util.Map;
-import io.micrometer.core.instrument.Counter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
