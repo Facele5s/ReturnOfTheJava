@@ -55,9 +55,9 @@ bucket4j:
 management:
   server:
     port: 8081
-    base-path: "/"
   endpoints:
     web:
+      base-path: /
       exposure:
         include: info,health,prometheus
       path-mapping:
