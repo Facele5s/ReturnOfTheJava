@@ -1,5 +1,5 @@
 app:
-  telegram-token: 6477851829:AAEbMDDEOuirQ8g7hwwNncu5kjyA3BShXQk
+  telegram-token: unset
   retry:
     http-statuses: 500, 503, 504
     type: constant
@@ -15,6 +15,10 @@ app:
       partitions: 2
       replicas: 1
     group: group
+  micrometer:
+    processed-messages-counter:
+      name: messages.processed
+      description: Number of processed messages
 
 spring:
   application:

@@ -15,6 +15,7 @@ public record ApplicationConfig(
     AccessType databaseAccessType,
     @NotNull
     Retry retry,
+    @NotNull
     KafkaConfig kafkaConfig,
     Boolean useQueue
 ) {
