@@ -52,6 +52,20 @@ bucket4j:
               unit: minutes
       url: /.*
 
+management:
+  server:
+    port: 8081
+    base-path: "/"
+  endpoints:
+    web:
+      exposure:
+        include: info,health,prometheus
+      path-mapping:
+        prometheus: metrics
+  metrics:
+    tags:
+      application: ${spring.application.name}
+
 logging:
   config: classpath:log4j2-plain.xml
 

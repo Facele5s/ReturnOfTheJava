@@ -1,5 +1,5 @@
 app:
-  telegram-token: unset
+  telegram-token: 6477851829:AAEbMDDEOuirQ8g7hwwNncu5kjyA3BShXQk
   retry:
     http-statuses: 500, 503, 504
     type: constant
@@ -43,6 +43,21 @@ bucket4j:
               time: 1
               unit: minutes
       url: /.*
+
+management:
+  server:
+    port: 8091
+    base-path: "/"
+  endpoints:
+    web:
+      exposure:
+        include: info,health,prometheus
+      path-mapping:
+        prometheus: metrics
+  metrics:
+    tags:
+      application: ${spring.application.name}
+
 
 logging:
   config: classpath:log4j2-plain.xml
