@@ -36,8 +36,8 @@ public class GitHubResponse implements Response {
     }
 
     @Override
-    public OffsetDateTime getUpdateDate() { //TODO
-        return OffsetDateTime.now().minusDays(1);
+    public OffsetDateTime getUpdateDate() {
+        return dateTime;
     }
 
     @Override

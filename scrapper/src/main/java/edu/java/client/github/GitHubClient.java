@@ -135,8 +135,6 @@ public class GitHubClient implements Client {
             });
         }
 
-
-
         return new GitHubResponse(updateReasons, lastUpdate);
     }
 
@@ -145,7 +143,7 @@ public class GitHubClient implements Client {
         return url.toString().matches(URL_PATTERN);
     }
 
-    private Repo getRepo(String userName, String repoName) {
+    public Repo getRepo(String userName, String repoName) {
         return webClient
             .get()
             .uri("/repos/{userName}/{repoName}", userName, repoName)
@@ -154,7 +152,7 @@ public class GitHubClient implements Client {
             .block();
     }
 
-    private List<Commit> getCommits(String userName, String repoName) {
+    public List<Commit> getCommits(String userName, String repoName) {
         ObjectMapper mapper = new ObjectMapper();
 
         Object[] objects = webClient.get()
@@ -171,7 +169,7 @@ public class GitHubClient implements Client {
         return commits;
     }
 
-    private List<Pull> getPulls(String userName, String repoName) {
+    public List<Pull> getPulls(String userName, String repoName) {
         ObjectMapper mapper = new ObjectMapper();
 
         Object[] objects = webClient.get()
@@ -188,7 +186,7 @@ public class GitHubClient implements Client {
         return pulls;
     }
 
-    private List<Release> getReleases(String userName, String repoName) {
+    public List<Release> getReleases(String userName, String repoName) {
         ObjectMapper mapper = new ObjectMapper();
 
         Object[] objects = webClient.get()
