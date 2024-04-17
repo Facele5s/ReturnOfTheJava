@@ -11,4 +11,6 @@ public interface JpaGithubReleaseRepository extends JpaRepository<GithubRelease,
     Collection<GithubRelease> findByRepoId(Long repoId);
 
     Collection<GithubRelease> findByPublishedAtAfter(OffsetDateTime dateTime);
+
+    GithubRelease findTopByOrderByPublishedAtDesc();
 }

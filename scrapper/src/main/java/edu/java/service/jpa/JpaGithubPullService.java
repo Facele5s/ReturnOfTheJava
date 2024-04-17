@@ -46,6 +46,11 @@ public class JpaGithubPullService implements GithubPullService {
     }
 
     @Override
+    public GithubPull getLast() {
+        return pullRepository.findTopByOrderByCreatedAtDesc();
+    }
+
+    @Override
     public GithubPull remove(Long id) throws NotFoundException {
         GithubPull pull = pullRepository.findById(id).get();
 

@@ -18,6 +18,7 @@ public class JdbcGithubPullDao {
     private static final String QUERY_FIND = "SELECT * FROM github_pull WHERE id = ?";
     private static final String QUERY_FIND_BY_REPO = "SELECT * FROM github_pull WHERE repo_id = ?";
     private static final String QUERY_FIND_NEWER = "SELECT * FROM github_pull WHERE created_at > ?";
+    private static final String QUERY_FIND_LAST = "SELECT * FROM github_pull ORDER BY created_at DESC LIMIT 1";
     private static final String QUERY_REMOVE = "DELETE FROM github_pull WHERE id = ?";
 
     private final JdbcTemplate jdbcTemplate;
@@ -58,6 +59,14 @@ public class JdbcGithubPullDao {
             QUERY_FIND_NEWER,
             new BeanPropertyRowMapper<>(GithubPull.class),
             dateTime.toInstant()
+        );
+    }
+
+    @Transactional
+    public GithubPull findLast() {
+        return jdbcTemplate.queryForObject(
+            QUERY_FIND_LAST,
+            new BeanPropertyRowMapper<>(GithubPull.class)
         );
     }
 

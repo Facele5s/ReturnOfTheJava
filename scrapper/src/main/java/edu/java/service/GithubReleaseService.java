@@ -17,5 +17,7 @@ public interface GithubReleaseService {
 
     Collection<GithubRelease> getNewer(OffsetDateTime dateTime);
 
+    GithubRelease getLast();
+
     GithubRelease remove(Long id) throws NotFoundException;
 }

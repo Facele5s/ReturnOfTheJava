@@ -69,6 +69,11 @@ public class JdbcGithubPullService implements GithubPullService {
     }
 
     @Override
+    public GithubPull getLast() {
+        return pullDao.findLast();
+    }
+
+    @Override
     public GithubPull remove(Long id) throws NotFoundException {
         try {
             return pullDao.remove(id);

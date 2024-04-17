@@ -9,4 +9,6 @@ public interface Response {
     Map<String, String> getParams();
 
     OffsetDateTime getUpdateDate();
+
+    String getDescription();
 }

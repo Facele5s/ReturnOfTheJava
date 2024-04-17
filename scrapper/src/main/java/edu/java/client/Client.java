@@ -6,6 +6,4 @@ public interface Client {
     boolean isLinkSupported(URI url);
 
     Response getResponse(URI uri);
-
-    String getUpdateDescription(Response response);
 }

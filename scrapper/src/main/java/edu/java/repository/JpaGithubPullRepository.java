@@ -11,4 +11,6 @@ public interface JpaGithubPullRepository extends JpaRepository<GithubPull, Long>
     Collection<GithubPull> findByRepoId(Long repoId);
 
     Collection<GithubPull> findByCreatedAtAfter(OffsetDateTime dateTime);
+
+    GithubPull findTopByOrderByCreatedAtDesc();
 }

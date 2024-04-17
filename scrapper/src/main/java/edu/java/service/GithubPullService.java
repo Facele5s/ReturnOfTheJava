@@ -17,5 +17,7 @@ public interface GithubPullService {
 
     Collection<GithubPull> getNewer(OffsetDateTime dateTime);
 
+    GithubPull getLast();
+
     GithubPull remove(Long id) throws NotFoundException;
 }

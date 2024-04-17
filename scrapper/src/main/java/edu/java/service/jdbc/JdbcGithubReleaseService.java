@@ -69,6 +69,11 @@ public class JdbcGithubReleaseService implements GithubReleaseService {
     }
 
     @Override
+    public GithubRelease getLast() {
+        return releaseDao.findLast();
+    }
+
+    @Override
     public GithubRelease remove(Long id) throws NotFoundException {
         try {
             return releaseDao.remove(id);

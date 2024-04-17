@@ -46,6 +46,11 @@ public class JpaGithubReleaseService implements GithubReleaseService {
     }
 
     @Override
+    public GithubRelease getLast() {
+        return releaseRepository.findTopByOrderByPublishedAtDesc();
+    }
+
+    @Override
     public GithubRelease remove(Long id) throws NotFoundException {
         GithubRelease release = releaseRepository.findById(id).get();
 

@@ -1,47 +1,207 @@
 package edu.java.client.github;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.java.client.Client;
-import edu.java.client.Response;
+import edu.java.client.github.model.Commit;
+import edu.java.client.github.model.Pull;
+import edu.java.client.github.model.Release;
+import edu.java.client.github.model.Repo;
+import edu.java.dto.exception.BadRequestException;
+import edu.java.service.GithubCommitService;
+import edu.java.service.GithubPullService;
+import edu.java.service.GithubReleaseService;
+import edu.java.service.GithubRepositoryService;
 import java.net.URI;
+import java.time.OffsetDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Component;
+import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
 
-@Component
 @SuppressWarnings("MagicNumber")
+@RequiredArgsConstructor
+@Slf4j
 public class GitHubClient implements Client {
     private static final String URL_PATTERN = "^((http)s?://)?github\\.com/(\\w+)/(\\w+)$";
+    private static final String UPD_COMMIT = "A new commit";
+    private static final String UPD_PULL = "A new pull request";
+    private static final String UPD_RELEASE = "A new release";
 
+    @Qualifier("githubWebClient")
     private final WebClient webClient;
 
-    public GitHubClient(@Qualifier("githubWebClient") WebClient webClient) {
+    private final GithubRepositoryService repoService;
+    private final GithubCommitService commitService;
+    private final GithubPullService pullService;
+    private final GithubReleaseService releaseService;
+
+    /*public GitHubClient(
+        @Qualifier("githubWebClient") WebClient webClient,
+        GithubRepositoryService repoService,
+        GithubCommitService commitService,
+        GithubPullService pullService,
+        GithubReleaseService releaseService
+    ) {
         this.webClient = webClient;
-    }
+        this.repoService = repoService;
+        this.commitService = commitService;
+        this.pullService = pullService;
+        this.releaseService = releaseService;
+    }*/
 
     public GitHubResponse getResponse(URI url) {
+        List<String> updateReasons = new ArrayList<>();
         Matcher matcher = Pattern.compile(URL_PATTERN).matcher(url.toString());
         matcher.matches();
 
         String userName = matcher.group(3);
         String repoName = matcher.group(4);
 
-        return webClient
-            .get()
-            .uri("/repos/{userName}/{repoName}", userName, repoName)
-            .retrieve()
-            .bodyToMono(GitHubResponse.class)
-            .block();
-    }
+        Repo repo = getRepo(userName, repoName);
 
-    @Override
-    public String getUpdateDescription(Response response) { //TODO
-        return null;
+        try {
+            repoService.add(repo.getId(), userName, repoName);
+        } catch (BadRequestException e) {
+            log.error(e.getDescription());
+        }
+
+        OffsetDateTime lastUpdate = null;
+
+        OffsetDateTime lastCommitDate = commitService.getLast().getCreatedAt();
+        List<Commit> newCommits = getCommits(userName, repoName).stream()
+            .filter(c -> c.getDate().isAfter(lastCommitDate))
+            .toList();
+
+        if (!newCommits.isEmpty()) {
+            updateReasons.add(UPD_COMMIT);
+            lastUpdate = newCommits.getFirst().getDate();
+
+            newCommits.forEach(c -> {
+                try {
+                    commitService.add(
+                        c.getSha(), repo.getId(), c.getAuthor(), c.getDate()
+                    );
+                } catch (BadRequestException e) {
+                    log.error(e.getDescription());
+                }
+            });
+        }
+
+        OffsetDateTime lastPullDate = pullService.getLast().getCreatedAt();
+        List<Pull> newPulls = getPulls(userName, repoName).stream()
+            .filter(p -> p.getDate().isAfter(lastPullDate))
+            .toList();
+
+        if (!newPulls.isEmpty()) {
+            updateReasons.add(UPD_PULL);
+            OffsetDateTime newPullDate = newPulls.getFirst().getDate();
+            lastUpdate = newPullDate.isAfter(lastUpdate) ? newPullDate : lastUpdate;
+
+            newPulls.forEach(p -> {
+                try {
+                    pullService.add(
+                        p.getId(), repo.getId(), p.getDate()
+                    );
+                } catch (BadRequestException e) {
+                    log.error(e.getDescription());
+                }
+            });
+        }
+
+        OffsetDateTime lastReleaseDate = releaseService.getLast().getPublishedAt();
+        List<Release> newReleases = getReleases(userName, repoName).stream()
+            .filter(r -> r.getDate().isAfter(lastReleaseDate))
+            .toList();
+
+        if (!newReleases.isEmpty()) {
+            updateReasons.add(UPD_RELEASE);
+            OffsetDateTime newReleaseDate = newReleases.getFirst().getDate();
+            lastUpdate = newReleaseDate.isAfter(lastUpdate) ? newReleaseDate : lastUpdate;
+
+            newReleases.forEach(r -> {
+                try {
+                    releaseService.add(
+                        r.getId(), repo.getId(), r.getDate()
+                    );
+                } catch (BadRequestException e) {
+                    log.error(e.getDescription());
+                }
+            });
+        }
+
+
+
+        return new GitHubResponse(updateReasons, lastUpdate);
     }
 
     @Override
     public boolean isLinkSupported(URI url) {
         return url.toString().matches(URL_PATTERN);
+    }
+
+    private Repo getRepo(String userName, String repoName) {
+        return webClient
+            .get()
+            .uri("/repos/{userName}/{repoName}", userName, repoName)
+            .retrieve()
+            .bodyToMono(Repo.class)
+            .block();
+    }
+
+    private List<Commit> getCommits(String userName, String repoName) {
+        ObjectMapper mapper = new ObjectMapper();
+
+        Object[] objects = webClient.get()
+            .uri("/repos/{userName}/{repoNane}/commits", userName, repoName)
+            .accept(MediaType.APPLICATION_JSON)
+            .retrieve()
+            .bodyToMono(Object[].class)
+            .block();
+
+        List<Commit> commits = Arrays.stream(objects)
+            .map(o -> mapper.convertValue(o, Commit.class))
+            .toList();
+
+        return commits;
+    }
+
+    private List<Pull> getPulls(String userName, String repoName) {
+        ObjectMapper mapper = new ObjectMapper();
+
+        Object[] objects = webClient.get()
+            .uri("/repos/{userName}/{repoNane}/pulls", userName, repoName)
+            .accept(MediaType.APPLICATION_JSON)
+            .retrieve()
+            .bodyToMono(Object[].class)
+            .block();
+
+        List<Pull> pulls = Arrays.stream(objects)
+            .map(o -> mapper.convertValue(o, Pull.class))
+            .toList();
+
+        return pulls;
+    }
+
+    private List<Release> getReleases(String userName, String repoName) {
+        ObjectMapper mapper = new ObjectMapper();
+
+        Object[] objects = webClient.get()
+            .uri("/repos/{userName}/{repoNane}/releases", userName, repoName)
+            .accept(MediaType.APPLICATION_JSON)
+            .retrieve()
+            .bodyToMono(Object[].class)
+            .block();
+
+        List<Release> releases = Arrays.stream(objects)
+            .map(o -> mapper.convertValue(o, Release.class))
+            .toList();
+
+        return releases;
     }
 }

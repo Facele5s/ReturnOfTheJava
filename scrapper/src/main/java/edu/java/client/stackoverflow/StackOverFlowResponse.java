@@ -23,6 +23,11 @@ public record StackOverFlowResponse(List<StackOverFlowItem> items) implements Re
         return items().getFirst().lastActivityDate();
     }
 
+    @Override
+    public String getDescription() {
+        return "";
+    }
+
     public record StackOverFlowItem(
         @JsonProperty("question_id")
         Long questionId,

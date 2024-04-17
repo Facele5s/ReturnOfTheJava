@@ -1,10 +1,10 @@
 package edu.java.client.github;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import edu.java.client.Response;
 import edu.java.client.github.model.Owner;
 import java.time.OffsetDateTime;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import lombok.Data;
 
@@ -13,15 +13,12 @@ public class GitHubResponse implements Response {
     private static final String KEY_LOGIN = "login";
     private static final String KEY_NAME = "name";
 
-    private final long id;
-    private final String name;
-    private final Owner owner;
+    private long id;
+    private String name;
+    private Owner owner;
 
-    @JsonProperty("updated_at")
-    private final OffsetDateTime updatedAt;
-
-    @JsonProperty("pushed_at")
-    private final OffsetDateTime pushedAt;
+    private final List<String> updateReasons;
+    private final OffsetDateTime dateTime;
 
     @Override
     public Long getId() {
@@ -39,7 +36,16 @@ public class GitHubResponse implements Response {
     }
 
     @Override
-    public OffsetDateTime getUpdateDate() {
-        return pushedAt;
+    public OffsetDateTime getUpdateDate() { //TODO
+        return OffsetDateTime.now().minusDays(1);
+    }
+
+    @Override
+    public String getDescription() {
+        StringBuilder sb = new StringBuilder();
+
+        updateReasons.forEach(r -> sb.append(r).append("\n"));
+
+        return sb.toString();
     }
 }

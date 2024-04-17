@@ -1,7 +1,6 @@
 package edu.java.client.stackoverflow;
 
 import edu.java.client.Client;
-import edu.java.client.Response;
 import java.net.URI;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -32,11 +31,6 @@ public class StackOverFlowClient implements Client {
             .retrieve()
             .bodyToMono(StackOverFlowResponse.class)
             .block();
-    }
-
-    @Override
-    public String getUpdateDescription(Response response) { //TODO
-        return null;
     }
 
     @Override

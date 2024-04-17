@@ -51,19 +51,21 @@ public class LinkUpdaterScheduler {
             try {
                 linkService.setLastCheckDate(link.getId(), OffsetDateTime.now());
 
-                if (response.getUpdateDate().isAfter(link.getUpdatedAt())) {
+                if (response.getUpdateDate() != null && response.getUpdateDate().isAfter(link.getUpdatedAt())) {
                     linkService.setLastUpdateDate(link.getId(), response.getUpdateDate());
 
                     Collection<Chat> chats = chatService.getChatsByLink(link.getId());
                     LinkUpdateRequest updateRequest = new LinkUpdateRequest(
                         link.getId(),
                         link.getUrl(),
-                        client.getUpdateDescription(response),
+                        response.getDescription(),
                         chats.stream().map(Chat::getId).toList()
                     );
 
                     updateService.sendUpdate(updateRequest);
                 }
+            } catch (NullPointerException e) {
+                log.error(e.getMessage());
             } catch (NotFoundException e) {
                 log.error(e.getDescription());
             }

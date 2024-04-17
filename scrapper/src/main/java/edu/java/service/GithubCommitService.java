@@ -20,5 +20,7 @@ public interface GithubCommitService {
 
     Collection<GithubCommit> getNewer(OffsetDateTime dateTime);
 
+    GithubCommit getLast();
+
     GithubCommit remove(String sha) throws NotFoundException;
 }

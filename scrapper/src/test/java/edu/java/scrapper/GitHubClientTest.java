@@ -59,7 +59,7 @@ public class GitHubClientTest {
         //Assert
         assertEquals(674765843, response.getId());
         assertEquals("Graph_GUI", response.getName());
-        assertEquals("2023-08-12T00:48:01Z", response.getPushedAt().toString());
-        assertEquals("2023-08-04T23:55:05Z", response.getUpdatedAt().toString());
+        assertEquals("2023-08-12T00:48:01Z", response.getUpdateDate().toString());
+        assertEquals("2023-08-04T23:55:05Z", response.getUpdateDate().toString());
     }
 }

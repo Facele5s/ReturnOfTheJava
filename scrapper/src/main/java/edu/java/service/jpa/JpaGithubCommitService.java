@@ -53,6 +53,11 @@ public class JpaGithubCommitService implements GithubCommitService {
     }
 
     @Override
+    public GithubCommit getLast() {
+        return commitRepository.findTopByOrderByCreatedAtDesc();
+    }
+
+    @Override
     public GithubCommit remove(String sha) throws NotFoundException {
         GithubCommit commit = commitRepository.findBySha(sha);
 

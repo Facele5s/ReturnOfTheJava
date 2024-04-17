@@ -81,6 +81,11 @@ public class JdbcGithubCommitService implements GithubCommitService {
     }
 
     @Override
+    public GithubCommit getLast() {
+        return commitDao.findLast();
+    }
+
+    @Override
     public GithubCommit remove(String sha) throws NotFoundException {
         try {
             return commitDao.remove(sha);

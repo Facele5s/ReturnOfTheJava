@@ -15,4 +15,6 @@ public interface JpaGithubCommitRepository extends JpaRepository<GithubCommit, S
     Collection<GithubCommit> findByAuthor(String author);
 
     Collection<GithubCommit> findByCreatedAtAfter(OffsetDateTime dateTime);
+
+    GithubCommit findTopByOrderByCreatedAtDesc();
 }
