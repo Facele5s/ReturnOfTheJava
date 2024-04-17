@@ -13,7 +13,10 @@ public record ApplicationConfig(
     String telegramToken,
     @NotNull
     Retry retry,
-    KafkaConfig kafkaConfig
+    @NotNull
+    KafkaConfig kafkaConfig,
+    @NotNull
+    Micrometer micrometer
 ) {
     public record Retry(
         Set<Integer> httpStatuses,
@@ -46,5 +49,16 @@ public record ApplicationConfig(
 
         }
 
+    }
+
+    public record Micrometer(
+        ProcessedMessagesCounter processedMessagesCounter
+    ) {
+        public record ProcessedMessagesCounter(
+            String name,
+            String description
+        ) {
+
+        }
     }
 }

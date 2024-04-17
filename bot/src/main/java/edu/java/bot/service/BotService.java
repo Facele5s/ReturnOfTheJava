@@ -4,6 +4,7 @@ import com.pengrad.telegrambot.request.SendMessage;
 import edu.java.bot.ObserverBot;
 import edu.java.dto.exception.BadRequestException;
 import edu.java.dto.request.LinkUpdateRequest;
+import io.micrometer.core.instrument.Counter;
 import java.util.HashMap;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class BotService {
     private final ObserverBot observerBot;
+    private final Counter processedUpdatesCounter;
 
     private final Map<Long, LinkUpdateRequest> updatesByIds = new HashMap<>();
 
@@ -36,5 +38,7 @@ public class BotService {
 
             observerBot.sendMessageToChat(new SendMessage(chatId, messageText));
         });
+
+        processedUpdatesCounter.increment();
     }
 }

@@ -15,6 +15,10 @@ app:
       partitions: 2
       replicas: 1
     group: group
+  micrometer:
+    processed-messages-counter:
+      name: messages.processed
+      description: Number of processed messages
 
 spring:
   application:
@@ -43,6 +47,21 @@ bucket4j:
               time: 1
               unit: minutes
       url: /.*
+
+management:
+  server:
+    port: 8091
+  endpoints:
+    web:
+      base-path: /
+      exposure:
+        include: info,health,prometheus
+      path-mapping:
+        prometheus: metrics
+  metrics:
+    tags:
+      application: ${spring.application.name}
+
 
 logging:
   config: classpath:log4j2-plain.xml
