@@ -1,5 +1,6 @@
 package edu.java.configuration;
 
+import edu.java.client.Client;
 import edu.java.dao.JdbcChatDao;
 import edu.java.dao.JdbcGithubCommitDao;
 import edu.java.dao.JdbcGithubPullDao;
@@ -21,6 +22,7 @@ import edu.java.service.jdbc.JdbcLinkService;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import java.util.List;
 
 @Configuration
 @ConditionalOnProperty(prefix = "app", name = "database-access-type", havingValue = "jdbc")
@@ -32,8 +34,8 @@ public class JdbcAccessConfiguration {
     }
 
     @Bean
-    public LinkService linkService(JdbcLinkDao jdbcLinkDao) {
-        return new JdbcLinkService(jdbcLinkDao);
+    public LinkService linkService(JdbcLinkDao jdbcLinkDao, List<Client> availableClients) {
+        return new JdbcLinkService(jdbcLinkDao, availableClients);
     }
 
     @Bean

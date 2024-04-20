@@ -1,5 +1,6 @@
 package edu.java.scrapper.jpa;
 
+import edu.java.client.Client;
 import edu.java.dto.response.LinkResponse;
 import edu.java.dto.response.ListLinkResponse;
 import edu.java.repository.JpaChatRepository;
@@ -19,6 +20,7 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 import java.net.URI;
 import java.util.Collection;
+import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -35,12 +37,15 @@ public class JpaLinkServiceTest extends IntegrationTest {
     @Autowired
     private JpaChatRepository chatRepository;
 
+    @Autowired
+    private List<Client> availableClients;
+
     private LinkService linkService;
     private ChatService chatService;
 
     @BeforeEach
     public void setup() {
-        linkService = new JpaLinkService(linkRepository, chatRepository);
+        linkService = new JpaLinkService(linkRepository, chatRepository, availableClients);
         chatService = new JpaChatService(chatRepository, linkRepository);
     }
 

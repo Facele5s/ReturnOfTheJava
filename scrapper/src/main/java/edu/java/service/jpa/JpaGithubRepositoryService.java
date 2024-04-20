@@ -13,9 +13,10 @@ public class JpaGithubRepositoryService implements GithubRepositoryService {
     private final JpaGithubRepoRepository repoRepository;
 
     @Override
-    public GithubRepository add(Long id, String userName, String name) throws BadRequestException {
+    public GithubRepository add(Long id, Long linkId, String userName, String name) throws BadRequestException {
         GithubRepository repository = new GithubRepository();
         repository.setId(id);
+        repository.setLinkId(linkId);
         repository.setUserName(userName);
         repository.setName(name);
 

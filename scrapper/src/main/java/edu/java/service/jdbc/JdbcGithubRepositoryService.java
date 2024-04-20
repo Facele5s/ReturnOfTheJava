@@ -21,10 +21,10 @@ public class JdbcGithubRepositoryService implements GithubRepositoryService {
     private final JdbcGithubRepositoryDao repositoryDao;
 
     @Override
-    public GithubRepository add(Long id, String userName, String name)
+    public GithubRepository add(Long id, Long linkId, String userName, String name)
         throws BadRequestException {
         try {
-            return repositoryDao.add(id, userName, name);
+            return repositoryDao.add(id, linkId, userName, name);
         } catch (DuplicateKeyException e) {
             throw new BadRequestException(
                 MSG_REPOSITORY_ADDED,

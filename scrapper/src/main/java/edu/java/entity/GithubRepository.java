@@ -19,6 +19,9 @@ public class GithubRepository {
     @Id
     private Long id;
 
+    @Column(name = "link_id")
+    private Long linkId;
+
     @Column(name = "user_name")
     private String userName;
 

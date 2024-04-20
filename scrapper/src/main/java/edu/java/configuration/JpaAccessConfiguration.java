@@ -1,5 +1,6 @@
 package edu.java.configuration;
 
+import edu.java.client.Client;
 import edu.java.repository.JpaChatRepository;
 import edu.java.repository.JpaGithubCommitRepository;
 import edu.java.repository.JpaGithubPullRepository;
@@ -21,6 +22,7 @@ import edu.java.service.jpa.JpaLinkService;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import java.util.List;
 
 @Configuration
 @ConditionalOnProperty(prefix = "app", name = "database-access-type", havingValue = "jpa")
@@ -32,8 +34,12 @@ public class JpaAccessConfiguration {
     }
 
     @Bean
-    public LinkService linkService(JpaLinkRepository jpaLinkRepository, JpaChatRepository jpaChatRepository) {
-        return new JpaLinkService(jpaLinkRepository, jpaChatRepository);
+    public LinkService linkService(
+        JpaLinkRepository jpaLinkRepository,
+        JpaChatRepository jpaChatRepository,
+        List<Client> availableClients
+        ) {
+        return new JpaLinkService(jpaLinkRepository, jpaChatRepository, availableClients);
     }
 
     @Bean

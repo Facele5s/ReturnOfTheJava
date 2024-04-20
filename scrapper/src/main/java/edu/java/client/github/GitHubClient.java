@@ -7,6 +7,7 @@ import edu.java.client.github.model.Pull;
 import edu.java.client.github.model.Release;
 import edu.java.client.github.model.Repo;
 import edu.java.dto.exception.BadRequestException;
+import edu.java.dto.exception.NotFoundException;
 import edu.java.service.GithubCommitService;
 import edu.java.service.GithubPullService;
 import edu.java.service.GithubReleaseService;
@@ -15,7 +16,9 @@ import java.net.URI;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import lombok.RequiredArgsConstructor;
@@ -57,16 +60,15 @@ public class GitHubClient implements Client {
 
     public GitHubResponse getResponse(URI url) {
         List<String> updateReasons = new ArrayList<>();
-        Matcher matcher = Pattern.compile(URL_PATTERN).matcher(url.toString());
-        matcher.matches();
 
-        String userName = matcher.group(3);
-        String repoName = matcher.group(4);
+        Map<String, String> repoData = parseRepoData(url);
+        String userName = repoData.get("USERNAME");
+        String repoName = repoData.get("REPONAME");
 
         Repo repo = getRepo(userName, repoName);
 
         try {
-            repoService.add(repo.getId(), userName, repoName);
+            repoService.add(repo.getId(), repo.getLinkId(), userName, repoName);
         } catch (BadRequestException e) {
             log.error(e.getDescription());
         }
@@ -201,5 +203,65 @@ public class GitHubClient implements Client {
             .toList();
 
         return releases;
+    }
+
+    public Map<String, String> parseRepoData(URI url) {
+        Matcher matcher = Pattern.compile(URL_PATTERN).matcher(url.toString());
+        Map<String, String> repoData = new HashMap<>();
+        matcher.matches();
+
+        String userName = matcher.group(3);
+        String repoName = matcher.group(4);
+
+        repoData.put("USERNAME", userName);
+        repoData.put("REPONAME", repoName);
+
+        return repoData;
+    }
+
+    public void addLinkData(URI url) {
+        Map<String, String> repoData = parseRepoData(url);
+        String userName = repoData.get("USERNAME");
+        String repoName = repoData.get("REPONAME");
+
+        Repo repo = getRepo(userName, repoName);
+        try {
+            repoService.add(repo.getId(), repo.getLinkId(), userName, repoName);
+        } catch (BadRequestException e) {
+            log.error(e.getDescription());
+        }
+
+        List<Commit> commits = getCommits(userName, repoName);
+        commits.forEach(c -> {
+            try {
+                commitService.add(
+                    c.getSha(), repo.getId(), c.getAuthor(), c.getDate()
+                );
+            } catch (BadRequestException e) {
+                log.error(e.getDescription());
+            }
+        });
+
+        List<Pull> pulls = getPulls(userName, repoName);
+        pulls.forEach(p -> {
+            try {
+                pullService.add(
+                    p.getId(), repo.getId(), p.getDate()
+                );
+            } catch (BadRequestException e) {
+                log.error(e.getDescription());
+            }
+        });
+
+        List<Release> releases = getReleases(userName, repoName);
+        releases.forEach(r -> {
+            try {
+                releaseService.add(
+                    r.getId(), repo.getId(), r.getDate()
+                );
+            } catch (BadRequestException e) {
+                log.error(e.getDescription());
+            }
+        });
     }
 }

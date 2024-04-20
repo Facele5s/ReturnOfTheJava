@@ -6,7 +6,7 @@ import edu.java.entity.GithubRepository;
 import java.util.Collection;
 
 public interface GithubRepositoryService {
-    GithubRepository add(Long id, String userName, String name) throws BadRequestException;
+    GithubRepository add(Long id, Long linkId, String userName, String name) throws BadRequestException;
 
     Collection<GithubRepository> getAll();
 
