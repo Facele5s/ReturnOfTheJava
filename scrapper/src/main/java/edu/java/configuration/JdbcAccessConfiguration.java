@@ -19,10 +19,10 @@ import edu.java.service.jdbc.JdbcGithubPullService;
 import edu.java.service.jdbc.JdbcGithubReleaseService;
 import edu.java.service.jdbc.JdbcGithubRepositoryService;
 import edu.java.service.jdbc.JdbcLinkService;
+import java.util.List;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import java.util.List;
 
 @Configuration
 @ConditionalOnProperty(prefix = "app", name = "database-access-type", havingValue = "jdbc")

@@ -41,7 +41,9 @@ public class JpaLinkService implements LinkService {
 
         linkRepository.save(link);
         chatRepository.save(chat);
-        client.addLinkData(url);
+        if (client != null) {
+            client.addLinkData(url, link.getId());
+        }
 
         Link savedLink = linkRepository.findByUrl(url);
         return new LinkResponse(chatId, savedLink.getUrl());

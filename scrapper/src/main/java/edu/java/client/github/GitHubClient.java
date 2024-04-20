@@ -7,7 +7,9 @@ import edu.java.client.github.model.Pull;
 import edu.java.client.github.model.Release;
 import edu.java.client.github.model.Repo;
 import edu.java.dto.exception.BadRequestException;
-import edu.java.dto.exception.NotFoundException;
+import edu.java.entity.GithubCommit;
+import edu.java.entity.GithubPull;
+import edu.java.entity.GithubRelease;
 import edu.java.service.GithubCommitService;
 import edu.java.service.GithubPullService;
 import edu.java.service.GithubReleaseService;
@@ -27,7 +29,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
 
-@SuppressWarnings("MagicNumber")
+@SuppressWarnings({"MagicNumber", "MultipleStringLiterals"})
 @RequiredArgsConstructor
 @Slf4j
 public class GitHubClient implements Client {
@@ -44,20 +46,6 @@ public class GitHubClient implements Client {
     private final GithubPullService pullService;
     private final GithubReleaseService releaseService;
 
-    /*public GitHubClient(
-        @Qualifier("githubWebClient") WebClient webClient,
-        GithubRepositoryService repoService,
-        GithubCommitService commitService,
-        GithubPullService pullService,
-        GithubReleaseService releaseService
-    ) {
-        this.webClient = webClient;
-        this.repoService = repoService;
-        this.commitService = commitService;
-        this.pullService = pullService;
-        this.releaseService = releaseService;
-    }*/
-
     public GitHubResponse getResponse(URI url) {
         List<String> updateReasons = new ArrayList<>();
 
@@ -67,23 +55,16 @@ public class GitHubClient implements Client {
 
         Repo repo = getRepo(userName, repoName);
 
-        try {
-            repoService.add(repo.getId(), repo.getLinkId(), userName, repoName);
-        } catch (BadRequestException e) {
-            log.error(e.getDescription());
-        }
-
         OffsetDateTime lastUpdate = null;
 
-        OffsetDateTime lastCommitDate = commitService.getLast().getCreatedAt();
+        GithubCommit lastCommit = commitService.getLast();
         List<Commit> newCommits = getCommits(userName, repoName).stream()
-            .filter(c -> c.getDate().isAfter(lastCommitDate))
+            .filter(lastCommit != null ? c -> c.getDate().isAfter(lastCommit.getCreatedAt()) : c -> true)
             .toList();
 
         if (!newCommits.isEmpty()) {
             updateReasons.add(UPD_COMMIT);
             lastUpdate = newCommits.getFirst().getDate();
-
             newCommits.forEach(c -> {
                 try {
                     commitService.add(
@@ -95,9 +76,9 @@ public class GitHubClient implements Client {
             });
         }
 
-        OffsetDateTime lastPullDate = pullService.getLast().getCreatedAt();
+        GithubPull lastPull = pullService.getLast();
         List<Pull> newPulls = getPulls(userName, repoName).stream()
-            .filter(p -> p.getDate().isAfter(lastPullDate))
+            .filter(lastPull != null ? p -> p.getDate().isAfter(lastPull.getCreatedAt()) : p -> true)
             .toList();
 
         if (!newPulls.isEmpty()) {
@@ -116,9 +97,9 @@ public class GitHubClient implements Client {
             });
         }
 
-        OffsetDateTime lastReleaseDate = releaseService.getLast().getPublishedAt();
+        GithubRelease lastRelease = releaseService.getLast();
         List<Release> newReleases = getReleases(userName, repoName).stream()
-            .filter(r -> r.getDate().isAfter(lastReleaseDate))
+            .filter(lastRelease != null ? r -> r.getDate().isAfter(lastRelease.getPublishedAt()) : r -> true)
             .toList();
 
         if (!newReleases.isEmpty()) {
@@ -219,14 +200,15 @@ public class GitHubClient implements Client {
         return repoData;
     }
 
-    public void addLinkData(URI url) {
+    @Override
+    public void addLinkData(URI url, Long linkId) {
         Map<String, String> repoData = parseRepoData(url);
         String userName = repoData.get("USERNAME");
         String repoName = repoData.get("REPONAME");
 
         Repo repo = getRepo(userName, repoName);
         try {
-            repoService.add(repo.getId(), repo.getLinkId(), userName, repoName);
+            repoService.add(repo.getId(), userName, repoName);
         } catch (BadRequestException e) {
             log.error(e.getDescription());
         }

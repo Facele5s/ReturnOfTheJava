@@ -39,7 +39,7 @@ public class StackOverFlowClient implements Client {
     }
 
     @Override
-    public void addLinkData(URI url) {
+    public void addLinkData(URI url, Long linkId) {
 
     }
 }

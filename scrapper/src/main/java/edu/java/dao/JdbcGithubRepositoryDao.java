@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class JdbcGithubRepositoryDao {
     private static final String QUERY_ADD = "INSERT INTO github_repository"
-        + " (id, link_id, user_name, name) VALUES (?, ?, ?, ?) RETURNING *";
+        + " (id, user_name, name) VALUES (?, ?, ?) RETURNING *";
     private static final String QUERY_FIND_ALL = "SELECT * FROM github_repository";
     private static final String QUERY_FIND = "SELECT * FROM github_repository WHERE id = ?";
     private static final String QUERY_FIND_BY_USER_NAME = "SELECT * FROM github_repository WHERE user_name = ?";
@@ -23,12 +23,11 @@ public class JdbcGithubRepositoryDao {
     private final JdbcTemplate jdbcTemplate;
 
     @Transactional
-    public GithubRepository add(Long id, Long linkId, String userName, String name) {
+    public GithubRepository add(Long id, String userName, String name) {
         return jdbcTemplate.queryForObject(
             QUERY_ADD,
             new BeanPropertyRowMapper<>(GithubRepository.class),
             id,
-            linkId,
             userName,
             name
         );

@@ -19,10 +19,10 @@ import edu.java.service.jpa.JpaGithubPullService;
 import edu.java.service.jpa.JpaGithubReleaseService;
 import edu.java.service.jpa.JpaGithubRepositoryService;
 import edu.java.service.jpa.JpaLinkService;
+import java.util.List;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import java.util.List;
 
 @Configuration
 @ConditionalOnProperty(prefix = "app", name = "database-access-type", havingValue = "jpa")

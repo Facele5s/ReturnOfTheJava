@@ -7,5 +7,5 @@ public interface Client {
 
     Response getResponse(URI url);
 
-    void addLinkData(URI url);
+    void addLinkData(URI url, Long linkId);
 }

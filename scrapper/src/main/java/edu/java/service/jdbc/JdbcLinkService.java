@@ -1,9 +1,6 @@
 package edu.java.service.jdbc;
 
 import edu.java.client.Client;
-import edu.java.client.github.GitHubClient;
-import edu.java.dao.JdbcGithubCommitDao;
-import edu.java.dao.JdbcGithubReleaseDao;
 import edu.java.dao.JdbcLinkDao;
 import edu.java.dto.exception.BadRequestException;
 import edu.java.dto.exception.NotFoundException;
@@ -46,7 +43,9 @@ public class JdbcLinkService implements LinkService {
 
         try {
             Link link = linkDao.add(chatId, url);
-            client.addLinkData(url);
+            if (client != null) {
+                client.addLinkData(url, link.getId());
+            }
 
             return new LinkResponse(chatId, link.getUrl());
         } catch (DuplicateKeyException e) {
