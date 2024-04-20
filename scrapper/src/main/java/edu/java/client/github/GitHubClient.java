@@ -186,20 +186,6 @@ public class GitHubClient implements Client {
         return releases;
     }
 
-    public Map<String, String> parseRepoData(URI url) {
-        Matcher matcher = Pattern.compile(URL_PATTERN).matcher(url.toString());
-        Map<String, String> repoData = new HashMap<>();
-        matcher.matches();
-
-        String userName = matcher.group(3);
-        String repoName = matcher.group(4);
-
-        repoData.put("USERNAME", userName);
-        repoData.put("REPONAME", repoName);
-
-        return repoData;
-    }
-
     @Override
     public void addLinkData(URI url, Long linkId) {
         Map<String, String> repoData = parseRepoData(url);
@@ -245,5 +231,19 @@ public class GitHubClient implements Client {
                 log.error(e.getDescription());
             }
         });
+    }
+
+    private Map<String, String> parseRepoData(URI url) {
+        Matcher matcher = Pattern.compile(URL_PATTERN).matcher(url.toString());
+        Map<String, String> repoData = new HashMap<>();
+        matcher.matches();
+
+        String userName = matcher.group(3);
+        String repoName = matcher.group(4);
+
+        repoData.put("USERNAME", userName);
+        repoData.put("REPONAME", repoName);
+
+        return repoData;
     }
 }

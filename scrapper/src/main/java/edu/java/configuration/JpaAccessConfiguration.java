@@ -1,12 +1,12 @@
 package edu.java.configuration;
 
 import edu.java.client.Client;
-import edu.java.repository.JpaChatRepository;
-import edu.java.repository.JpaGithubCommitRepository;
-import edu.java.repository.JpaGithubPullRepository;
-import edu.java.repository.JpaGithubReleaseRepository;
-import edu.java.repository.JpaGithubRepoRepository;
-import edu.java.repository.JpaLinkRepository;
+import edu.java.scrapper.domain.jpa.JpaChatRepository;
+import edu.java.scrapper.domain.jpa.JpaGithubCommitRepository;
+import edu.java.scrapper.domain.jpa.JpaGithubPullRepository;
+import edu.java.scrapper.domain.jpa.JpaGithubReleaseRepository;
+import edu.java.scrapper.domain.jpa.JpaGithubRepoRepository;
+import edu.java.scrapper.domain.jpa.JpaLinkRepository;
 import edu.java.service.ChatService;
 import edu.java.service.GithubCommitService;
 import edu.java.service.GithubPullService;

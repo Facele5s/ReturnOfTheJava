@@ -1,9 +1,9 @@
 package edu.java.service.jdbc;
 
-import edu.java.dao.JdbcGithubCommitDao;
 import edu.java.dto.exception.BadRequestException;
 import edu.java.dto.exception.NotFoundException;
 import edu.java.entity.GithubCommit;
+import edu.java.scrapper.domain.jdbc.JdbcGithubCommitDao;
 import edu.java.service.GithubCommitService;
 import java.time.OffsetDateTime;
 import java.util.Collection;

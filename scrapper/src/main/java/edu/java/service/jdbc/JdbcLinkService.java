@@ -1,12 +1,12 @@
 package edu.java.service.jdbc;
 
 import edu.java.client.Client;
-import edu.java.dao.JdbcLinkDao;
 import edu.java.dto.exception.BadRequestException;
 import edu.java.dto.exception.NotFoundException;
 import edu.java.dto.response.LinkResponse;
 import edu.java.dto.response.ListLinkResponse;
 import edu.java.entity.Link;
+import edu.java.scrapper.domain.jdbc.JdbcLinkDao;
 import edu.java.service.LinkService;
 import java.net.URI;
 import java.time.Duration;

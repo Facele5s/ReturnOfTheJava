@@ -1,9 +1,9 @@
 package edu.java.service.jdbc;
 
-import edu.java.dao.JdbcGithubRepositoryDao;
 import edu.java.dto.exception.BadRequestException;
 import edu.java.dto.exception.NotFoundException;
 import edu.java.entity.GithubRepository;
+import edu.java.scrapper.domain.jdbc.JdbcGithubRepositoryDao;
 import edu.java.service.GithubRepositoryService;
 import java.util.Collection;
 import lombok.RequiredArgsConstructor;

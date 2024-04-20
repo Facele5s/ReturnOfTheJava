@@ -1,12 +1,12 @@
 package edu.java.configuration;
 
 import edu.java.client.Client;
-import edu.java.dao.JdbcChatDao;
-import edu.java.dao.JdbcGithubCommitDao;
-import edu.java.dao.JdbcGithubPullDao;
-import edu.java.dao.JdbcGithubReleaseDao;
-import edu.java.dao.JdbcGithubRepositoryDao;
-import edu.java.dao.JdbcLinkDao;
+import edu.java.scrapper.domain.jdbc.JdbcChatDao;
+import edu.java.scrapper.domain.jdbc.JdbcGithubCommitDao;
+import edu.java.scrapper.domain.jdbc.JdbcGithubPullDao;
+import edu.java.scrapper.domain.jdbc.JdbcGithubReleaseDao;
+import edu.java.scrapper.domain.jdbc.JdbcGithubRepositoryDao;
+import edu.java.scrapper.domain.jdbc.JdbcLinkDao;
 import edu.java.service.ChatService;
 import edu.java.service.GithubCommitService;
 import edu.java.service.GithubPullService;

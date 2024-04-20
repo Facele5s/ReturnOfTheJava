@@ -1,9 +1,9 @@
 package edu.java.service.jdbc;
 
-import edu.java.dao.JdbcGithubReleaseDao;
 import edu.java.dto.exception.BadRequestException;
 import edu.java.dto.exception.NotFoundException;
 import edu.java.entity.GithubRelease;
+import edu.java.scrapper.domain.jdbc.JdbcGithubReleaseDao;
 import edu.java.service.GithubReleaseService;
 import java.time.OffsetDateTime;
 import java.util.Collection;

@@ -3,7 +3,7 @@ package edu.java.service.jpa;
 import edu.java.dto.exception.BadRequestException;
 import edu.java.dto.exception.NotFoundException;
 import edu.java.entity.GithubPull;
-import edu.java.repository.JpaGithubPullRepository;
+import edu.java.scrapper.domain.jpa.JpaGithubPullRepository;
 import edu.java.service.GithubPullService;
 import java.time.OffsetDateTime;
 import java.util.Collection;

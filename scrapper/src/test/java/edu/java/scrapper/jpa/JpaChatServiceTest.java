@@ -1,8 +1,8 @@
 package edu.java.scrapper.jpa;
 
 import edu.java.dto.response.ListChatResponse;
-import edu.java.repository.JpaChatRepository;
-import edu.java.repository.JpaLinkRepository;
+import edu.java.scrapper.domain.jpa.JpaChatRepository;
+import edu.java.scrapper.domain.jpa.JpaLinkRepository;
 import edu.java.scrapper.IntegrationTest;
 import edu.java.service.ChatService;
 import edu.java.service.jpa.JpaChatService;

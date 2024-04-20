@@ -1,9 +1,9 @@
 package edu.java.service.jdbc;
 
-import edu.java.dao.JdbcGithubPullDao;
 import edu.java.dto.exception.BadRequestException;
 import edu.java.dto.exception.NotFoundException;
 import edu.java.entity.GithubPull;
+import edu.java.scrapper.domain.jdbc.JdbcGithubPullDao;
 import edu.java.service.GithubPullService;
 import java.time.OffsetDateTime;
 import java.util.Collection;

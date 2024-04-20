@@ -3,7 +3,7 @@ package edu.java.service.jpa;
 import edu.java.dto.exception.BadRequestException;
 import edu.java.dto.exception.NotFoundException;
 import edu.java.entity.GithubRepository;
-import edu.java.repository.JpaGithubRepoRepository;
+import edu.java.scrapper.domain.jpa.JpaGithubRepoRepository;
 import edu.java.service.GithubRepositoryService;
 import java.util.Collection;
 import lombok.RequiredArgsConstructor;
