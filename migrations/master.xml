@@ -10,4 +10,9 @@
     <include file="chat.sql"/>
     <include file="link.sql"/>
     <include file="chat_link.sql"/>
+    <include file="github_repository.sql"/>
+    <include file="github_commit.sql"/>
+    <include file="github_pull.sql"/>
+    <include file="github_release.sql"/>
+
 </databaseChangeLog>

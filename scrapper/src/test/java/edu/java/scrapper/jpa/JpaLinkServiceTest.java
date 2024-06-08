@@ -1,16 +1,16 @@
 package edu.java.scrapper.jpa;
 
+import edu.java.client.Client;
 import edu.java.dto.response.LinkResponse;
 import edu.java.dto.response.ListLinkResponse;
-import edu.java.repository.JpaChatRepository;
-import edu.java.repository.JpaLinkRepository;
+import edu.java.scrapper.domain.jpa.JpaChatRepository;
+import edu.java.scrapper.domain.jpa.JpaLinkRepository;
 import edu.java.scrapper.IntegrationTest;
 import edu.java.service.ChatService;
 import edu.java.service.LinkService;
 import edu.java.service.jpa.JpaChatService;
 import edu.java.service.jpa.JpaLinkService;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +19,7 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 import java.net.URI;
 import java.util.Collection;
+import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -35,12 +36,15 @@ public class JpaLinkServiceTest extends IntegrationTest {
     @Autowired
     private JpaChatRepository chatRepository;
 
+    @Autowired
+    private List<Client> availableClients;
+
     private LinkService linkService;
     private ChatService chatService;
 
     @BeforeEach
     public void setup() {
-        linkService = new JpaLinkService(linkRepository, chatRepository);
+        linkService = new JpaLinkService(linkRepository, chatRepository, availableClients);
         chatService = new JpaChatService(chatRepository, linkRepository);
     }
 

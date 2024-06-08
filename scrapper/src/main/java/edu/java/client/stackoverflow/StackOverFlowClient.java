@@ -37,4 +37,9 @@ public class StackOverFlowClient implements Client {
     public boolean isLinkSupported(URI url) {
         return url.toString().matches(URL_PATTERN);
     }
+
+    @Override
+    public void addLinkData(URI url, Long linkId) {
+
+    }
 }

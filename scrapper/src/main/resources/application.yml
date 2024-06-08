@@ -3,7 +3,7 @@ app:
     enable: true
     interval: 10000
     force-check-delay: 300000
-  database-access-type: jpa
+  database-access-type: jooq
   retry:
     http-statuses: 500, 503, 504
     type: constant
@@ -19,6 +19,7 @@ app:
       partitions: 2
       replicas: 1
   use-queue: true
+  git-hub-token: unset
 
 spring:
   application:

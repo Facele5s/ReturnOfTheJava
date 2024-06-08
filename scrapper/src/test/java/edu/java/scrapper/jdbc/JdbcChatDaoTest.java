@@ -1,7 +1,7 @@
 package edu.java.scrapper.jdbc;
 
-import edu.java.dao.JdbcChatDao;
-import edu.java.dao.JdbcLinkDao;
+import edu.java.scrapper.domain.jdbc.JdbcChatDao;
+import edu.java.scrapper.domain.jdbc.JdbcLinkDao;
 import edu.java.entity.Chat;
 import edu.java.entity.Link;
 import edu.java.scrapper.IntegrationTest;

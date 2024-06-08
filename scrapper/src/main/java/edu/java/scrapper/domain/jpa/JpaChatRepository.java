@@ -1,4 +1,4 @@
-package edu.java.repository;
+package edu.java.scrapper.domain.jpa;
 
 import edu.java.entity.Chat;
 import edu.java.entity.Link;

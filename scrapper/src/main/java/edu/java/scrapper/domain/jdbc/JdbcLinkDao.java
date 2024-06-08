@@ -1,4 +1,4 @@
-package edu.java.dao;
+package edu.java.scrapper.domain.jdbc;
 
 import edu.java.entity.Link;
 import java.net.URI;

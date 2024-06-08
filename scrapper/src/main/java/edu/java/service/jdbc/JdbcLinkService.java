@@ -1,11 +1,12 @@
 package edu.java.service.jdbc;
 
-import edu.java.dao.JdbcLinkDao;
+import edu.java.client.Client;
 import edu.java.dto.exception.BadRequestException;
 import edu.java.dto.exception.NotFoundException;
 import edu.java.dto.response.LinkResponse;
 import edu.java.dto.response.ListLinkResponse;
 import edu.java.entity.Link;
+import edu.java.scrapper.domain.jdbc.JdbcLinkDao;
 import edu.java.service.LinkService;
 import java.net.URI;
 import java.time.Duration;
@@ -31,11 +32,20 @@ public class JdbcLinkService implements LinkService {
     private static final String DESC_CHECK_LINK_UNTRACKED = "You can't check an untracked link";
 
     private final JdbcLinkDao linkDao;
+    private final List<Client> availableClients;
 
     @Override
     public LinkResponse add(Long chatId, URI url) throws BadRequestException, NotFoundException {
+        Client client = availableClients
+            .stream()
+            .filter(c -> c.isLinkSupported(url))
+            .findFirst().orElse(null);
+
         try {
             Link link = linkDao.add(chatId, url);
+            if (client != null) {
+                client.addLinkData(url, link.getId());
+            }
 
             return new LinkResponse(chatId, link.getUrl());
         } catch (DuplicateKeyException e) {

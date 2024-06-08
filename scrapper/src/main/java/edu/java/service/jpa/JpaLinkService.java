@@ -1,11 +1,12 @@
 package edu.java.service.jpa;
 
+import edu.java.client.Client;
 import edu.java.dto.response.LinkResponse;
 import edu.java.dto.response.ListLinkResponse;
 import edu.java.entity.Chat;
 import edu.java.entity.Link;
-import edu.java.repository.JpaChatRepository;
-import edu.java.repository.JpaLinkRepository;
+import edu.java.scrapper.domain.jpa.JpaChatRepository;
+import edu.java.scrapper.domain.jpa.JpaLinkRepository;
 import edu.java.service.LinkService;
 import java.net.URI;
 import java.time.Duration;
@@ -18,9 +19,15 @@ import lombok.RequiredArgsConstructor;
 public class JpaLinkService implements LinkService {
     private final JpaLinkRepository linkRepository;
     private final JpaChatRepository chatRepository;
+    private final List<Client> availableClients;
 
     @Override
     public LinkResponse add(Long chatId, URI url) {
+        Client client = availableClients
+            .stream()
+            .filter(c -> c.isLinkSupported(url))
+            .findFirst().orElse(null);
+
         Chat chat = chatRepository.findById(chatId).get();
 
         Link link = linkRepository.findByUrl(url);
@@ -34,6 +41,9 @@ public class JpaLinkService implements LinkService {
 
         linkRepository.save(link);
         chatRepository.save(chat);
+        if (client != null) {
+            client.addLinkData(url, link.getId());
+        }
 
         Link savedLink = linkRepository.findByUrl(url);
         return new LinkResponse(chatId, savedLink.getUrl());

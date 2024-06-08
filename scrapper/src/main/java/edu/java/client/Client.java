@@ -5,5 +5,7 @@ import java.net.URI;
 public interface Client {
     boolean isLinkSupported(URI url);
 
-    Response getResponse(URI uri);
+    Response getResponse(URI url);
+
+    void addLinkData(URI url, Long linkId);
 }

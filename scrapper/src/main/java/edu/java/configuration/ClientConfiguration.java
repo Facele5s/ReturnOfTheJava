@@ -3,6 +3,10 @@ package edu.java.configuration;
 import edu.java.client.Client;
 import edu.java.client.github.GitHubClient;
 import edu.java.client.stackoverflow.StackOverFlowClient;
+import edu.java.service.GithubCommitService;
+import edu.java.service.GithubPullService;
+import edu.java.service.GithubReleaseService;
+import edu.java.service.GithubRepositoryService;
 import jakarta.validation.constraints.NotNull;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,6 +22,10 @@ public class ClientConfiguration {
     String gitHubBaseUrl;
 
     @NotNull
+    @Value("${app.github-token}")
+    String gitHubToken;
+
+    @NotNull
     @Value("${client.base-url.stackoverflow:https://api.stackexchange.com/2.3}")
     String stackOverFlowBaseUrl;
 
@@ -26,15 +34,16 @@ public class ClientConfiguration {
     String botBaseUrl;
 
     @Bean("githubWebClient")
-    public WebClient getGitHubClient() {
+    public WebClient getGitHubWebClient() {
         return WebClient
             .builder()
             .baseUrl(gitHubBaseUrl)
+            .defaultHeader("Authorization", gitHubToken)
             .build();
     }
 
     @Bean("stackoverflowWebClient")
-    public WebClient getStackOverFlowClient() {
+    public WebClient getStackOverFlowWebClient() {
         return WebClient
             .builder()
             .baseUrl(stackOverFlowBaseUrl)
@@ -50,10 +59,29 @@ public class ClientConfiguration {
     }
 
     @Bean
-    public List<Client> getAvailableClients() {
+    public GitHubClient getGitHubClient(
+        GithubRepositoryService repoService,
+        GithubCommitService commitService,
+        GithubPullService pullService,
+        GithubReleaseService releaseService
+    ) {
+        return new GitHubClient(
+            getGitHubWebClient(),
+            repoService,
+            commitService,
+            pullService,
+            releaseService
+        );
+    }
+
+    @Bean
+    public List<Client> getAvailableClients(
+        GitHubClient gitHubClient,
+        StackOverFlowClient stackOverFlowClient
+    ) {
         return List.of(
-            new GitHubClient(getGitHubClient()),
-            new StackOverFlowClient(getStackOverFlowClient())
+            gitHubClient,
+            stackOverFlowClient
         );
     }
 }
